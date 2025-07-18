@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateServiceGallery extends CreateRecord
 {
     protected static string $resource = ServiceGalleryResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return ServiceGalleryResource::getUrl('index');
+    }
 }

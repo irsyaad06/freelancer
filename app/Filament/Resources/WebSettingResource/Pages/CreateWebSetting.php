@@ -9,4 +9,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateWebSetting extends CreateRecord
 {
     protected static string $resource = WebSettingResource::class;
+    protected function getRedirectUrl(): string
+    {
+        return WebSettingResource::getUrl('index');
+    }
 }
