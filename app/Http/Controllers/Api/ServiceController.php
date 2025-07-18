@@ -14,7 +14,8 @@ class ServiceController extends Controller
         $services = Service::with('gallery')->get();
 
         return response()->json([
-            'success' => true,
+            'code' => 200,
+            'message' => 'Berhasil mendapatkan data layanan',
             'data' => $services
         ]);
     }
@@ -26,13 +27,15 @@ class ServiceController extends Controller
 
         if (!$service) {
             return response()->json([
-                'success' => false,
-                'message' => 'Layanan tidak ditemukan.'
+                'code' => 404,
+                'message' => 'Layanan tidak ditemukan',
+                'data' => null
             ], 404);
         }
 
         return response()->json([
-            'success' => true,
+            'code' => 200,
+            'message' => 'Berhasil mendapatkan detail layanan',
             'data' => $service
         ]);
     }

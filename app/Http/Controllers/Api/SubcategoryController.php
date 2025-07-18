@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Subcategory;
 use Illuminate\Http\Request;
 
 class SubcategoryController extends Controller
@@ -12,38 +13,31 @@ class SubcategoryController extends Controller
      */
     public function index()
     {
-        //
+        $subcategory = Subcategory::with('category')->get();
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Berhasil mendapatkan data sub kategori',
+            'data' => $subcategory
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
-    }
+        $subcategory = Subcategory::with('category')->find($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        if (!$subcategory) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Sub kategori tidak ditemukan',
+                'data' => null
+            ], 404);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json([
+            'code' => 200,
+            'message' => 'Berhasil mendapatkan detail sub kategori',
+            'data' => $subcategory
+        ]);
     }
 }
