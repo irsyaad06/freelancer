@@ -1,13 +1,13 @@
 <template>
-    <div class="w-full max-w-xs mx-auto mt-10 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+    <div class="w-50 max-w-xs mx-auto mt-10 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
         <div class="flex flex-col items-center p-6">
             <img
                 class="w-20 h-20 mb-3 rounded-full shadow-lg object-cover"
-                src="https://flowbite.com/docs/images/people/profile-picture-3.jpg"
-                alt="Freelancer image"
+                :src="getProfilePhotoUrl(freelancer.profile_photo)"
+                :alt="freelancer.name"
             />
             <h5 class="mb-1 text-lg font-semibold text-gray-900 dark:text-white text-center">
-                Bonnie Green
+                {{ freelancer.name }}
             </h5>
             <div class="flex items-center mb-2">
                 <svg class="w-4 h-4 text-yellow-300 mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
@@ -23,13 +23,51 @@
             </span>
             
             <div class="flex flex-col space-y-2 w-full">
-                <a
-                    href="#"
-                    class="w-full inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                <button
+                    @click="goToDetail"
+                    class="w-full inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-pointer"
                 >
                     Lihat Detail
-                </a>
+                </button>
             </div>
         </div>
     </div>
 </template>
+
+<script setup>
+import { useRouter } from 'vue-router'
+
+const props = defineProps({
+    freelancer: {
+        type: Object,
+        required: true,
+        default: () => ({
+            name: 'Freelancer Name',
+            profile_photo: null
+        })
+    }
+})
+
+const router = useRouter()
+
+const goToDetail = () => {
+    router.push(`/freelancers/${props.freelancer.id}`)
+}
+
+const getProfilePhotoUrl = (photoPath) => {
+    if (!photoPath) {
+        return 'https://flowbite.com/docs/images/people/profile-picture-3.jpg'
+    }
+    
+    // Handle both cases: with and without /storage/ prefix
+    if (photoPath.startsWith('http')) {
+        return photoPath
+    }
+    
+    if (photoPath.startsWith('/storage/')) {
+        return photoPath
+    }
+    
+    return `/storage/${photoPath}`
+}
+</script>
