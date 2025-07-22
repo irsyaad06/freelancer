@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('service_packages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('service_id')->constrained('services')->onUpdate('cascade')->onDelete('cascade');
-            $table->enum('name', ['Starter', 'Standard', 'Premium']);
-            $table->decimal('price', 12, 2)->default(0.00);
-            $table->unsignedInteger('revisions')->default(0);
-            $table->string('duration', 60);
-            $table->text('description');
+            $table->foreignId('freelancer_id')->constrained()->onDelete('cascade');
+            $table->foreignId('subcategory_id')->constrained()->onDelete('cascade');
+            $table->string('title');
+            $table->decimal('price', 12, 2);
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

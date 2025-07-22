@@ -6,20 +6,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Freelancer;
+
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',
-        'no_whatsapp',
-        'profile_photo',
-    ];
+    protected $fillable = ['name', 'email', 'password', 'role','no_whatsapp'];
+
 
     protected $hidden = [
         'password',

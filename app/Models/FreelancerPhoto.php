@@ -4,16 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Freelancer;
+use App\Models\Subcategory;
 
-class ServicePackage extends Model
+
+class FreelancerPhoto extends Model
 {
-    protected $fillable = ['freelancer_id', 'subcategory_id', 'title', 'price', 'description'];
+    use HasFactory;
 
-    public function services()
-    {
-        return $this->hasMany(Service::class);
-    }
+    protected $fillable = [
+        'freelancer_id',
+        'subcategory_id',
+        'title',
+        'image_path',
+    ];
 
     public function freelancer()
     {

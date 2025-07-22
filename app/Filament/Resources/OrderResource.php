@@ -16,6 +16,22 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
+
+    public static function getModelLabel(): string
+    {
+        return 'Pesanan';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Pesanan';
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Pesanan';
+    }
+
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
     protected static ?string $navigationGroup = 'Transaksi';
     protected static ?string $navigationLabel = 'Pesanan';

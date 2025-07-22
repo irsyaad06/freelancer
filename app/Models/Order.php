@@ -2,22 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Order extends Model
 {
-    protected $fillable = ['user_id', 'service_package_id', 'description', 'attachment', 'status'];
-    // protected static function booted()
-    // {
-    //     static::creating(function (Category $category) {
-    //         $category->slug = Str::slug($category->name);
-    //     });
-    // }
-    public function user(): BelongsTo
+    protected $fillable = [
+        'freelancer_id',
+        'service_package_id',
+        'buyer_name',
+        'buyer_email',
+        'buyer_whatsapp',
+        'job_description',
+        'attachment_file',
+        'status'
+    ];
+
+    public function freelancer(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Freelancer::class);
     }
 
     public function package(): BelongsTo

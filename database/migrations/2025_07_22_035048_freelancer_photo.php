@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('freelancer_photos', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 120);
-            $table->string('slug', 160)->unique();
-            $table->string('icon')->nullable();
+            $table->foreignId('freelancer_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('subcategory_id')->constrained()->cascadeOnDelete();
+            $table->string('title');
+            $table->string('image_path'); // misal untuk menyimpan path foto
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        //
     }
 };

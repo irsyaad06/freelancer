@@ -10,6 +10,6 @@
     "isolatedModules": true,
     "lib": ["esnext", "dom"]
   },
-  "include": ["resources/js/**/*"],
+  "include": ["resources/js/**/*", "resources/js/shims-vue.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

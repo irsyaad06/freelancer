@@ -18,8 +18,8 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?int $navigationSort = 0;
-    protected static ?string $navigationGroup = 'Manajemen Layanan';
-    protected static ?string $navigationLabel = 'Freelancer';
+    protected static ?string $navigationGroup = 'Manajemen Website';
+    protected static ?string $navigationLabel = 'Admin';
     protected static ?string $navigationIcon = 'heroicon-o-user';
 
     public static function form(Form $form): Form
@@ -37,20 +37,20 @@ class UserResource extends Resource
                     ->password()
                     ->nullable()
                     ->maxLength(255),
-                Forms\Components\Select::make('role')
-                    ->options([
-                        'user' => 'User',
-                        'freelancer' => 'Freelancer',
-                        'admin' => 'Admin',
-                    ])
-                    ->default('freelancer')
-                    ->required(),
+                // Forms\Components\Select::make('role')
+                //     ->options([
+                //         'user' => 'User',
+                //         'freelancer' => 'Freelancer',
+                //         'admin' => 'Admin',
+                //     ])
+                //     ->default('freelancer')
+                //     ->required(),
                 Forms\Components\TextInput::make('no_whatsapp')
                     ->label('No. WhatsApp')
                     ->maxLength(20),
-                Forms\Components\FileUpload::make('profile_photo')
-                    ->image()
-                    ->directory('profile-photos'),
+                // Forms\Components\FileUpload::make('profile_photo')
+                //     ->image()
+                //     ->directory('profile-photos'),
             ]);
     }
 
@@ -60,9 +60,9 @@ class UserResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('email'),
-                Tables\Columns\TextColumn::make('role'),
+                // Tables\Columns\TextColumn::make('role'),
                 Tables\Columns\TextColumn::make('no_whatsapp'),
-                Tables\Columns\ImageColumn::make('profile_photo'),
+                // Tables\Columns\ImageColumn::make('profile_photo'),
             ])
             ->filters([
                 //

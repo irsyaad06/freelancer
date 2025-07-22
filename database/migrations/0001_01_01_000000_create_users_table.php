@@ -19,10 +19,9 @@ return new class extends Migration
             $table->string('email', 190)->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
-            $table->enum('role', ['user', 'freelancer', 'admin'])->default('freelancer');
-            $table->string('no_whatsapp', 20)->nullable();
-            $table->string('profile_photo')->nullable();
-            $table->rememberToken(); 
+            $table->enum('role', ['freelancer', 'client','admin'])->nullable();
+            $table->string('no_whatsapp')->nullable();
+            $table->rememberToken();
             $table->timestamps();
         });
 

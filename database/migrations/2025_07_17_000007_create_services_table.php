@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('subcategory_id')->constrained('subcategories')->onUpdate('cascade')->onDelete('restrict');
-            $table->string('title', 180);
-            $table->text('description');
-            $table->boolean('is_top_3')->default(false);
+            $table->foreignId('freelancer_id')->constrained()->onDelete('cascade');
+            $table->foreignId('subcategory_id')->constrained()->onDelete('cascade');
+            $table->foreignId('service_package_id')->constrained('service_packages')->onDelete('cascade');
+            $table->string('title');
             $table->timestamps();
         });
     }
