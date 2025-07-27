@@ -32,11 +32,30 @@ class OrderController extends Controller
             'buyer_email' => 'required|email|max:255',
             'buyer_whatsapp' => 'required|string|max:20',
             'job_description' => 'required|string',
-            'attachment_file' => 'nullable|string'
+            'attachment_file' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240'
         ]);
 
         $validated['status'] = 'pending';
 
+        if ($request->hasFile('attachment_file')) {
+            $path = $request->file('attachment_file')->store('order_attachments', 'public');
+            $validated['attachment_file'] = $path;
+        }
+
+        // Generate id_order
+        $prefix = 'PS-' . now()->format('Ym') . '-';
+        $latestOrder = Order::where('id_order', 'like', $prefix . '%')->latest()->first();
+
+        if ($latestOrder) {
+            $lastNumber = (int) substr($latestOrder->id_order, -4);
+            $newNumber = $lastNumber + 1;
+        } else {
+            $newNumber = 1;
+        }
+
+        $validated['id_order'] = $prefix . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
+
+        // Create order
         $order = Order::create($validated);
 
         return response()->json([
@@ -46,13 +65,14 @@ class OrderController extends Controller
         ], 201);
     }
 
+
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        $order = Order::with([ 'freelancer', 'package'])->find($id);
-        
+        $order = Order::with(['freelancer', 'package'])->find($id);
+
         if (!$order) {
             return response()->json([
                 'success' => false,
@@ -72,7 +92,7 @@ class OrderController extends Controller
     public function update(Request $request, string $id)
     {
         $order = Order::find($id);
-        
+
         if (!$order) {
             return response()->json([
                 'success' => false,
@@ -104,7 +124,7 @@ class OrderController extends Controller
     public function destroy(string $id)
     {
         $order = Order::find($id);
-        
+
         if (!$order) {
             return response()->json([
                 'success' => false,

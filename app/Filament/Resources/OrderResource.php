@@ -99,8 +99,11 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->label('ID')
+                Tables\Columns\TextColumn::make('no')
+                ->label('No')
+                ->rowIndex(),
+                Tables\Columns\TextColumn::make('id_order')
+                    ->label('Order ID')
                     ->sortable()
                     ->searchable(),
 

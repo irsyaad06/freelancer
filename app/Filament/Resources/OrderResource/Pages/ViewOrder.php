@@ -27,7 +27,7 @@ class ViewOrder extends ViewRecord
                         Grid::make(2)
                             ->schema([
                                 Group::make([
-                                    TextEntry::make('id')
+                                    TextEntry::make('id_order')
                                         ->label('Order ID')
                                         ->size('lg')
                                         ->weight('bold'),
@@ -140,9 +140,12 @@ class ViewOrder extends ViewRecord
                 
                 Section::make('File Lampiran')
                     ->schema([
-                        ImageEntry::make('attachment_file')
+                        TextEntry::make('attachment_file')
                             ->label('File Attachment')
-                            ->size(200)
+                            ->badge()
+                            ->color('primary')
+                            ->url(fn(?string $state): ?string => $state ? \Illuminate\Support\Facades\Storage::url($state) : null, true)
+                            ->formatStateUsing(fn (?string $state): ?string => $state ? 'Klik untuk melihat/mengunduh file' : null)
                             ->hidden(fn(?Order $record): bool => ! $record?->attachment_file),
                     ])
                     ->hidden(fn(?Order $record): bool => ! $record?->attachment_file),

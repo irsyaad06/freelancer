@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Order extends Model
 {
     protected $fillable = [
+        'id_order',
         'freelancer_id',
         'service_package_id',
         'buyer_name',

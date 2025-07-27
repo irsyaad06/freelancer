@@ -39,6 +39,7 @@ class ServicePackageController extends Controller
                 'title' => $package->title,
                 'description' => $package->description,
                 'freelancer' => [
+                    'id' => $package->freelancer->id,
                     'name' => $package->freelancer->name,
                 ],
                 'subcategory' => [
