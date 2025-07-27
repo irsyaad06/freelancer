@@ -1,11 +1,11 @@
 <template>
-    
     <div>
         <div class="max-w-screen-xl mx-auto p-4 mt-10 pt-10">
             <span class="text-2xl font-semibold">Form Rekrut Freelancer</span>
             <!-- Service Package Info -->
             <div class="md:grid grid-cols-4 md:grid-cols-2 gap-5">
                 <div class="order-2 md:order-1">
+                    <span>Paket yang dipilih</span>
                     <div v-if="loading" class="text-center py-8">
                         <div
                             class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mt-10 pt-10"
@@ -16,17 +16,15 @@
                     <div v-else-if="error" class="text-center py-8">
                         <p class="text-red-600">{{ error }}</p>
                     </div>
+                    
                     <div
                         v-else-if="servicePackage"
                         class="mb-8 bg-white rounded-lg shadow-sm border border-blue-300 p-6 mt-6 sticky"
                     >
-                        <h2 class="text-xl font-semibold">
-                            Paket yang anda pilih :
+                        <h2 class="flex text-xl font-semibold">
+                            {{ servicePackage.title }}
                         </h2>
 
-                        <span class="text-lg mb-2">
-                            {{ servicePackage.title }}
-                        </span>
                         <p class="text-gray-600 mb-4">
                             {{ servicePackage.description }}
                         </p>
@@ -251,10 +249,7 @@
     </div>
 
     <!-- Terms Modal -->
-    <Term
-        :show="showTermsModal"
-        @close="showTermsModal = false"
-    />
+    <Term :show="showTermsModal" @close="showTermsModal = false" />
 </template>
 
 <script setup>

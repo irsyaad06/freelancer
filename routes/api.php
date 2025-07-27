@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\SubcategoryController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ServiceGalleryController;
 use App\Http\Controllers\Api\ServicePackageController;
+use App\Http\Controllers\Api\OrderController;
 
 
 Route::prefix('kategori')->group(function () {
@@ -32,4 +33,13 @@ Route::prefix('jasa')->group(function () {
 Route::prefix('layanan')->group(function () {
     Route::get('/', [ServicePackageController::class, 'index']);
     Route::get('/{id}', [ServicePackageController::class, 'show']);
+});
+
+// Order routes
+Route::prefix('pesanan')->group(function () {
+    Route::get('/', [OrderController::class, 'index']);
+    Route::post('/', [OrderController::class, 'store']);
+    Route::get('/{id}', [OrderController::class, 'show']);
+    Route::put('/{id}', [OrderController::class, 'update']);
+    Route::delete('/{id}', [OrderController::class, 'destroy']);
 });

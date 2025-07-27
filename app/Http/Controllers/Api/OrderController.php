@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -12,7 +13,11 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        $orders = Order::with(['freelancer', 'package'])->get();
+        return response()->json([
+            'success' => true,
+            'data' => $orders
+        ]);
     }
 
     /**
@@ -20,7 +25,25 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'freelancer_id' => 'required|exists:freelancers,id',
+            'service_package_id' => 'required|exists:service_packages,id',
+            'buyer_name' => 'required|string|max:255',
+            'buyer_email' => 'required|email|max:255',
+            'buyer_whatsapp' => 'required|string|max:20',
+            'job_description' => 'required|string',
+            'attachment_file' => 'nullable|string'
+        ]);
+
+        $validated['status'] = 'pending';
+
+        $order = Order::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Order created successfully',
+            'data' => $order->load(['freelancer', 'package'])
+        ], 201);
     }
 
     /**
@@ -28,7 +51,19 @@ class OrderController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $order = Order::with([ 'freelancer', 'package'])->find($id);
+        
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $order
+        ]);
     }
 
     /**
@@ -36,7 +71,31 @@ class OrderController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $order = Order::find($id);
+        
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found'
+            ], 404);
+        }
+
+        $validated = $request->validate([
+            'title' => 'sometimes|required|string|max:255',
+            'description' => 'sometimes|required|string',
+            'price' => 'sometimes|required|numeric|min:0',
+            'deadline' => 'sometimes|required|date|after:today',
+            'notes' => 'nullable|string',
+            'status' => 'sometimes|required|in:pending,in_progress,completed,cancelled'
+        ]);
+
+        $order->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Order updated successfully',
+            'data' => $order->load(['freelancer', 'package'])
+        ]);
     }
 
     /**
@@ -44,6 +103,20 @@ class OrderController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $order = Order::find($id);
+        
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found'
+            ], 404);
+        }
+
+        $order->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Order deleted successfully'
+        ]);
     }
 }
