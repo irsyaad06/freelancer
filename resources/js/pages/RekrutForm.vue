@@ -232,15 +232,15 @@
                         <!-- Submit Button -->
                         <button
                             type="submit"
-                            :disabled="!isFormValid"
+                            :disabled="!isFormValid || isSubmitting"
                             :class="[
                                 'w-full text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center',
-                                isFormValid
+                                isFormValid && !isSubmitting
                                     ? 'bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300'
                                     : 'bg-gray-400 cursor-not-allowed',
                             ]"
                         >
-                            Lanjutkan
+                            {{ isSubmitting ? 'Mengirim...' : 'Lanjutkan' }}
                         </button>
                     </form>
                 </div>
@@ -263,6 +263,7 @@ const servicePackage = ref(null);
 const loading = ref(true);
 const error = ref(null);
 const showTermsModal = ref(false);
+const isSubmitting = ref(false);
 
 const form = ref({
     fullName: "",
@@ -396,12 +397,69 @@ const isFormValid = computed(() => {
     );
 });
 
-const handleSubmit = () => {
-    if (validateForm()) {
-        // Form is valid, proceed with submission
-        console.log("Form submitted:", form.value);
-        alert("Form berhasil dikirim!");
-        // Here you would typically send the data to your API
+const handleSubmit = async () => {
+    if (!validateForm()) {
+        return;
+    }
+
+    isSubmitting.value = true;
+
+    try {
+        const formData = new FormData();
+        
+        // Add form fields
+        formData.append('freelancer_id', servicePackage.value.freelancer.id);
+        formData.append('service_package_id', servicePackage.value.id);
+        formData.append('buyer_name', form.value.fullName);
+        formData.append('buyer_email', form.value.email);
+        formData.append('buyer_whatsapp', form.value.whatsapp);
+        formData.append('job_description', form.value.jobDescription);
+
+        // Add file if provided
+        if (form.value.fileUpload) {
+            formData.append('attachment_file', form.value.fileUpload);
+        }
+
+        const response = await axios.post('http://localhost:8000/api/pesanan', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        if (response.data.success) {
+            alert('Order berhasil dibuat! ID Order: ' + response.data.data.id_order);
+            // Reset form
+            form.value = {
+                fullName: "",
+                email: "",
+                whatsapp: "",
+                jobDescription: "",
+                fileUpload: null,
+                termsAccepted: false,
+            };
+            selectedFile.value = null;
+            characterCount.value = 0;
+        }
+    } catch (error) {
+        console.error("Error submitting order:", error.response?.data || error);
+
+        if (error.response && error.response.status === 422 && error.response.data.errors) {
+            // Handle validation errors from Laravel
+            const validationErrors = error.response.data.errors;
+            let errorMessage = "Terdapat kesalahan pada input Anda:\n";
+            for (const field in validationErrors) {
+                errorMessage += `- ${validationErrors[field].join(", ")}\n`;
+            }
+            alert(errorMessage);
+        } else if (error.response?.data?.message) {
+            // Handle other server errors with a specific message
+            alert("Error: " + error.response.data.message);
+        } else {
+            // Handle network errors or other unexpected issues
+            alert("Terjadi kesalahan saat mengirim order. Silakan coba lagi.");
+        }
+    } finally {
+        isSubmitting.value = false;
     }
 };
 
