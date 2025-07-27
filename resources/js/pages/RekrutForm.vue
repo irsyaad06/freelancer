@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="max-w-screen-xl mx-auto p-4 mt-10 pt-10">
+        <div class="max-w-screen-xl mx-auto p-4 mt-10 pt-10 mb-10 pb-10">
             <span class="text-2xl font-semibold">Form Rekrut Freelancer</span>
             <!-- Service Package Info -->
             <div class="md:grid grid-cols-4 md:grid-cols-2 gap-5">
@@ -16,7 +16,7 @@
                     <div v-else-if="error" class="text-center py-8">
                         <p class="text-red-600">{{ error }}</p>
                     </div>
-                    
+
                     <div
                         v-else-if="servicePackage"
                         class="mb-8 bg-white rounded-lg shadow-sm border border-blue-300 p-6 mt-6 sticky"
@@ -41,12 +41,12 @@
                             </div>
                             <div class="flex flex-wrap mt-2">
                                 <span class="font-medium text-gray-700"
-                                    >Kategori</span
+                                    >Jasa</span
                                 >
                                 <p>:</p>
-                                <p class="text-gray-600 ml-1">
-                                    {{ servicePackage.subcategory.name }}
-                                </p>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 ml-1">
+                                  Pembuatan  {{ servicePackage.subcategory.name }}
+                                </span>
                             </div>
                             <div class="flex flex-wrap mt-2">
                                 <span class="font-medium text-gray-700"
@@ -240,7 +240,7 @@
                                     : 'bg-gray-400 cursor-not-allowed',
                             ]"
                         >
-                            {{ isSubmitting ? 'Mengirim...' : 'Lanjutkan' }}
+                            {{ isSubmitting ? "Mengirim..." : "Lanjutkan" }}
                         </button>
                     </form>
                 </div>
@@ -406,28 +406,36 @@ const handleSubmit = async () => {
 
     try {
         const formData = new FormData();
-        
+
         // Add form fields
-        formData.append('freelancer_id', servicePackage.value.freelancer.id);
-        formData.append('service_package_id', servicePackage.value.id);
-        formData.append('buyer_name', form.value.fullName);
-        formData.append('buyer_email', form.value.email);
-        formData.append('buyer_whatsapp', form.value.whatsapp);
-        formData.append('job_description', form.value.jobDescription);
+        formData.append("freelancer_id", servicePackage.value.freelancer.id);
+        formData.append("service_package_id", servicePackage.value.id);
+        formData.append("buyer_name", form.value.fullName);
+        formData.append("buyer_email", form.value.email);
+        formData.append("buyer_whatsapp", form.value.whatsapp);
+        formData.append("job_description", form.value.jobDescription);
 
         // Add file if provided
         if (form.value.fileUpload) {
-            formData.append('attachment_file', form.value.fileUpload);
+            formData.append("attachment_file", form.value.fileUpload);
         }
 
-        const response = await axios.post('http://localhost:8000/api/pesanan', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
+        const response = await axios.post(
+            //harus diganti jadi dinamis
+            "http://localhost:8000/api/pesanan",
+            formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            }
+        );
 
         if (response.data.success) {
-            alert('Order berhasil dibuat! ID Order: ' + response.data.data.id_order);
+            alert(
+                "Order berhasil dibuat! ID Order: " +
+                    response.data.data.id_order
+            );
             // Reset form
             form.value = {
                 fullName: "",
@@ -443,7 +451,11 @@ const handleSubmit = async () => {
     } catch (error) {
         console.error("Error submitting order:", error.response?.data || error);
 
-        if (error.response && error.response.status === 422 && error.response.data.errors) {
+        if (
+            error.response &&
+            error.response.status === 422 &&
+            error.response.data.errors
+        ) {
             // Handle validation errors from Laravel
             const validationErrors = error.response.data.errors;
             let errorMessage = "Terdapat kesalahan pada input Anda:\n";
