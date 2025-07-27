@@ -1,5 +1,5 @@
 <template>
-    <div class="text-center mt-10 pt-10">
+    <div class="text-center mt-10 pt-10 mb-10 pb-10">
         <h2 class="text-3xl font-bold text-blue-600 mt-10">
             Welcome to FindLancer
         </h2>
@@ -10,6 +10,10 @@
         <SearchBar />
         <div class="p-8">
             <CategoryButtons />
+        </div>
+        <div v-if="selectedSubcategory" class="text-gray-800">
+            Jasa yang di pilih :
+            <span class="text-blue-600 bg-transparent border-1 border-blue-700 rounded-md p-2">{{ selectedSubcategory.name }}</span>
         </div>
         <div v-if="loading" class="flex justify-center items-center py-10">
             <div
@@ -31,54 +35,36 @@
         <!-- Data State -->
         <div
             v-else-if="freelancers.length > 0"
-            class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
+            class="max-w-screen-xl flex mx-auto p-4"
         >
             <FreelancerCard
                 v-for="f in freelancers"
                 :key="f.id"
                 :freelancer="f"
+                :selectedSubcategory="selectedSubcategory"
             />
         </div>
 
         <!-- Empty State -->
-        <div v-else class="text-center py-10">
+        <div v-else class="text-center py-10 mt-10">
             <p class="text-gray-500">Tidak ada freelancer yang tersedia</p>
         </div>
     </div>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
+import { onMounted } from "vue";
+import { storeToRefs } from "pinia";
+import { useFreelancerStore } from "../stores/freelancerStore";
 import CategoryButtons from "../components/CategoryButtons.vue";
 import FreelancerCard from "../components/FreelancerCard.vue";
 import SearchBar from "../components/SearchBar.vue";
 
-import api from "../axios";
+const freelancerStore = useFreelancerStore();
+const { freelancers, loading, error, selectedSubcategory } =
+    storeToRefs(freelancerStore);
 
-const freelancers = ref([]);
-const loading = ref(true);
-const error = ref(null);
-
-const fetchFreelancers = async () => {
-    try {
-        loading.value = true;
-        error.value = null;
-
-        const response = await api.get("/freelancer");
-
-        if (response.data.code === 200) {
-            freelancers.value = response.data.data;
-        } else {
-            throw new Error(
-                response.data.message || "Gagal mengambil data freelancer"
-            );
-        }
-    } catch (err) {
-        error.value =
-            err.response?.data?.message || err.message || "Terjadi kesalahan";
-        console.error("Error fetching freelancers:", err);
-    } finally {
-        loading.value = false;
-    }
+const fetchFreelancers = () => {
+    freelancerStore.fetchFreelancers();
 };
 
 onMounted(() => {

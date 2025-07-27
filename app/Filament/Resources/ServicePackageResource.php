@@ -74,9 +74,9 @@ class ServicePackageResource extends Resource
                 Select::make('title')
                     ->label('Judul Paket')
                     ->options([
-                        'starter' => 'Starter',
-                        'standard' => 'Standard',
-                        'premium' => 'Premium',
+                        'Starter' => 'Starter',
+                        'Standard' => 'Standard',
+                        'Premium' => 'Premium',
                     ])
                     ->required()
                     ->native(false),
@@ -120,10 +120,11 @@ class ServicePackageResource extends Resource
             ])
             ->defaultGroup('freelancer.name')
             ->columns([
-                Tables\Columns\TextColumn::make('title')->label('Judul Paket')->searchable()->color(fn(string $state): string => match ($state) {
-                    'starter' => 'gray',
-                    'standard' => 'warning',
-                    'premium' => 'success',
+                Tables\Columns\TextColumn::make('title')->label('Judul Paket')->searchable()
+                ->color(fn(string $state): string => match ($state) {
+                    'Starter' => 'gray',
+                    'Standard' => 'warning',
+                    'Premium' => 'success',
                 })->badge(),
                 Tables\Columns\TextColumn::make('freelancer.name')->label('Freelancer'),
                 Tables\Columns\TextColumn::make('subcategory.name')->label('Subkategori'),

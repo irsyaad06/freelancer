@@ -17,12 +17,12 @@ const routes = [
                 component: Home,
             },
             {
-                path: "/freelancers/:id",
+                path: "jasa/:subcategoryId/freelancer/:freelancerId",
                 name: "freelancer.detail",
                 component: FreelancerDetail,
             },
             {
-                path: "/rekrut",
+                path: "rekrut/jasa/:servicePackageId",
                 name: "rekrut",
                 component: RekrutForm,
             },

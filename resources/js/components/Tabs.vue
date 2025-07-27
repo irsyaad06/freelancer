@@ -3,106 +3,78 @@
         <div class="mb-4 border-gray-200 dark:border-gray-700">
             <ul
                 class="flex md:flex-wrap justify-between -mb-px text-sm font-medium text-center bullet"
-                id="default-styled-tab"
-                data-tabs-toggle="#default-styled-tab-content"
-                data-tabs-active-classes="text-blue-600 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-500 border-blue-600 dark:border-blue-500 bg-blue-200"
-                data-tabs-inactive-classes="dark:border-transparent text-gray-500 hover:text-gray-600 dark:text-gray-400 border-gray-100 hover:border-gray-300 dark:border-gray-700 dark:hover:text-gray-300"
                 role="tablist"
             >
-                <li class="me-2" role="presentation">
+                <li v-for="(pkg, index) in servicePackages" :key="pkg.id" class="me-2" role="presentation">
                     <button
-                        class="font-bold inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-                        id="dashboard-styled-tab"
-                        data-tabs-target="#styled-dashboard"
+                        :class="[
+                            'inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300',
+                            activeTab === index ? 'font-bold border-blue-600 text-blue-600 bg-blue-200' : 'border-transparent text-gray-500'
+                        ]"
+                        @click="selectPackage(index, pkg)"
                         type="button"
                         role="tab"
-                        aria-controls="dashboard"
-                        aria-selected="false"
+                        :aria-controls="`content-${index}`"
+                        :aria-selected="activeTab === index"
                     >
-                        Starter
-                    </button>
-                </li>
-                <li class="me-2" role="presentation">
-                    <button
-                        class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-                        id="settings-styled-tab"
-                        data-tabs-target="#styled-settings"
-                        type="button"
-                        role="tab"
-                        aria-controls="settings"
-                        aria-selected="false"
-                    >
-                        Standard
-                    </button>
-                </li>
-                <li role="presentation">
-                    <button
-                        class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-                        id="contacts-styled-tab"
-                        data-tabs-target="#styled-contacts"
-                        type="button"
-                        role="tab"
-                        aria-controls="contacts"
-                        aria-selected="false"
-                    >
-                        Premium
+                        {{ pkg.name }}
                     </button>
                 </li>
             </ul>
         </div>
-        <div id="default-styled-tab-content">
+        <div id="tab-content">
             <div
-                class="hidden p-4 rounded-lg border-gray-100 dark:bg-white"
-                id="styled-dashboard"
+                v-for="(pkg, index) in servicePackages"
+                :key="pkg.id"
+                :class="['p-4 rounded-lg bg-gray-50 dark:bg-gray-800', activeTab === index ? 'block' : 'hidden']"
+                :id="`content-${index}`"
                 role="tabpanel"
-                aria-labelledby="dashboard-tab"
+                :aria-labelledby="`tab-${index}`"
             >
                 <div class="flex justify-between mb-3">
-                    <span class="font-bold">Starter Package</span>
-                    <span class="text-green-600">Rp 20.000</span>
+                    <span class="font-bold text-lg">{{ pkg.name }}</span>
+                    <span class="text-green-600 font-semibold">Rp {{ formatPrice(pkg.price) }}</span>
                 </div>
                 <div>
-                    <ul class=" pl-5 list-disc">
-                        <li>
-                            This is some placeholder content the askjdhasjkd
+                    <h4 class="font-semibold mb-2">Layanan yang termasuk:</h4>
+                    <ul class="pl-5 list-disc space-y-1">
+                        <li v-for="service in pkg.services" :key="service.id" class="text-sm">
+                            {{ service.name }}
                         </li>
-                        <li>This is some placeholder content the</li>
-                        <li>This is some placeholder content the</li>
-                        <li>This is some placeholder content the</li>
-                        <li>This is some placeholder content the</li>
                     </ul>
                 </div>
-            </div>
-            <div
-                class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800"
-                id="styled-settings"
-                role="tabpanel"
-                aria-labelledby="settings-tab"
-            >
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                    This is some placeholder content the
-                    <strong class="font-medium text-gray-800 dark:text-white"
-                        >Settings tab's associated content</strong
-                    >. Clicking another tab will toggle the visibility of this
-                    one for the next. The tab JavaScript swaps classes to
-                    control the content visibility and styling.
-                </p>
-            </div>
-            <div
-                class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800"
-                id="styled-contacts"
-                role="tabpanel"
-                aria-labelledby="contacts-tab"
-            >
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                    This is some placeholder content the
-                    <strong class="font-medium text-gray-800 dark:text-white"
-                        >Contacts tab's associated content</strong
-                    >. Clicking another tab will toggle the visibility of this
-                    one for the next. The tab JavaScript swaps classes to
-                    control the content visibility and styling.
-                </p>
             </div>
         </div>
     </div>
 </template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+
+const props = defineProps({
+    servicePackages: {
+        type: Array,
+        default: () => []
+    }
+});
+
+const emit = defineEmits(['package-selected']);
+
+const activeTab = ref(0);
+
+const selectPackage = (index, pkg) => {
+    activeTab.value = index;
+    emit('package-selected', pkg);
+};
+
+const formatPrice = (price) => {
+    return new Intl.NumberFormat('id-ID').format(price);
+};
+
+onMounted(() => {
+    // Ensure tabs work correctly
+    if (props.servicePackages.length > 0) {
+        activeTab.value = 0;
+    }
+});
+</script>

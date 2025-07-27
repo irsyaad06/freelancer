@@ -37,4 +37,9 @@ class Freelancer extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    public function services()
+    {
+        return $this->belongsToMany(Service::class, 'freelancer_service');
+    }
 }

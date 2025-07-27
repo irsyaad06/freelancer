@@ -13,7 +13,7 @@
             <!-- Subcategories Dropdown for this category -->
             <div
                 v-if="selectedCategory === category.id"
-                class="absolute z-10 mt-2 bg-white rounded-lg shadow-lg border min-w-[200px]"
+                class="absolute z-10 mt-2 bg-white rounded-lg shadow-lg border border-blue-400 min-w-[200px]"
             >
                 <ul class="py-2">
                     <li
@@ -22,7 +22,7 @@
                     >
                         <button
                             @click="selectSubcategory(subcategory)"
-                            class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600 transition-colors"
+                            class="w-full text-left px-4 py-2 text-sm text-blue-700 hover:bg-gray-100 hover:text-blue-600 transition-colors"
                         >
                             {{ subcategory.name }}
                         </button>
@@ -42,11 +42,13 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import api from "../axios";
+import { useFreelancerStore } from "../stores/freelancerStore";
 
 const categories = ref([]);
 const subcategories = ref([]);
 const selectedCategory = ref(null);
 const selectedSubcategory = ref(null);
+const freelancerStore = useFreelancerStore();
 
 const toggleCategory = (categoryId) => {
     selectedCategory.value =
@@ -57,6 +59,7 @@ const selectSubcategory = (subcategory) => {
     selectedSubcategory.value = subcategory;
     selectedCategory.value = null; // Close dropdown after selection
     console.log("Selected:", subcategory.name);
+    freelancerStore.fetchFreelancersBySubcategory(subcategory);
 };
 
 const getSubcategories = (categoryId) => {

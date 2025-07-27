@@ -13,88 +13,50 @@ class ServicePackageController extends Controller
      */
     public function index()
     {
-        try {
-            $packages = ServicePackage::with(relations: ['service' => function($query) {
-                $query->select('service.id', 'service.title', 'service.description', 'service.price', 'service.delivery_time');
-            }])
-            ->select('id', 'name', 'description', 'price', 'duration', 'created_at')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-            return response()->json([
-                'code' => 200,
-                'message' => 'Service packages retrieved successfully',
-                'data' => $packages->map(function($package) {
-                    return [
-                        'id' => $package->id,
-                        'name' => $package->name,
-                        'description' => $package->description,
-                        'price' => $package->price,
-                        'duration' => $package->duration,
-                        'service' => $package->service->map(function($service) {
-                            return [
-                                'id' => $service->id,
-                                'title' => $service->title,
-                                'description' => $service->description,
-                                'price' => $service->price,
-                                'delivery_time' => $service->delivery_time,
-                                'quantity' => $service->pivot->quantity
-                            ];
-                        })
-                    ];
-                })
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'code' => 500,
-                'message' => 'Failed to fetch service packages: ' . $e->getMessage()
-            ], 500);
-        }
+        $layanan = ServicePackage::with(['freelancer', 'subcategory', 'services'])->get();
+        return response()->json([
+            'code' => 200,
+            'message' => 'Berhasil mendapatkan data Freelancer',
+            'data' => $layanan
+        ]);
     }
 
     /**
      * Display the specified service package with its service
      */
-    public function show(string $id)
+    public function show($id)
     {
         try {
-            $package = ServicePackage::with(['service' => function($query) {
-                $query->select('service.id', 'service.title', 'service.description', 'service.price', 'service.delivery_time')
-                      ->withPivot('quantity');
-            }])
-            ->select('id', 'name', 'description', 'price', 'duration', 'created_at')
-            ->findOrFail($id);
+            $package = ServicePackage::with(['freelancer', 'subcategory', 'services'])->find($id);
 
-            return response()->json([
-                'code' => 200,
-                'message' => 'Service package retrieved successfully',
-                'data' => [
-                    'id' => $package->id,
-                    'name' => $package->name,
-                    'description' => $package->description,
-                    'price' => $package->price,
-                    'duration' => $package->duration,
-                    'service' => $package->service->map(function($service) {
-                        return [
-                            'id' => $service->id,
-                            'title' => $service->title,
-                            'description' => $service->description,
-                            'price' => $service->price,
-                            'delivery_time' => $service->delivery_time,
-                            'quantity' => $service->pivot->quantity
-                        ];
-                    })
-                ]
-            ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'code' => 404,
-                'message' => 'Service package not found'
-            ], 404);
+            if (!$package) {
+                return response()->json(['message' => 'Package not found'], 404);
+            }
+
+            // Manually construct the response to ensure correct JSON structure
+            $data = [
+                'id' => $package->id,
+                'title' => $package->title,
+                'description' => $package->description,
+                'freelancer' => [
+                    'name' => $package->freelancer->name,
+                ],
+                'subcategory' => [
+                    'name' => $package->subcategory->name,
+                ],
+                'services' => $package->services->map(function ($service) {
+                    return [
+                        'title' => $service->title,
+                    ];
+                }),
+            ];
+
+            return response()->json(['data' => $data]);
+
         } catch (\Exception $e) {
             return response()->json([
-                'code' => 500,
-                'message' => 'Failed to fetch service package: ' . $e->getMessage()
+                'message' => 'Error fetching package details',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
