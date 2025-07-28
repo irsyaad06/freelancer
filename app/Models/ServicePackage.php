@@ -2,20 +2,29 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 class ServicePackage extends Model
 {
-    protected $fillable = ['service_id', 'name','description', 'price', 'revisions', 'duration'];
-    // protected static function booted()
-    // {
-    //     static::creating(function (ServicePackage $servicePackage) {
-    //         $servicePackage->slug = Str::slug($servicePackage->name);
-    //     });
-    // }
-    public function service(): BelongsTo
+    protected $fillable = ['freelancer_id', 'subcategory_id', 'title', 'price', 'description'];
+
+    public function services()
     {
-        return $this->belongsTo(Service::class);
+        return $this->hasMany(Service::class);
     }
+
+    public function freelancer()
+    {
+        return $this->belongsTo(Freelancer::class);
+    }
+
+    public function subcategory()
+    {
+        return $this->belongsTo(Subcategory::class);
+    }
+
+    
 }
+

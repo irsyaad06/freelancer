@@ -3,47 +3,62 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\ServicePackage;
 use Illuminate\Http\Request;
 
 class ServicePackageController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of all service packages with their service
      */
     public function index()
     {
-        //
+        $layanan = ServicePackage::with(['freelancer', 'subcategory', 'services'])->get();
+        return response()->json([
+            'code' => 200,
+            'message' => 'Berhasil mendapatkan data Freelancer',
+            'data' => $layanan
+        ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display the specified service package with its service
      */
-    public function store(Request $request)
+    public function show($id)
     {
-        //
-    }
+        try {
+            $package = ServicePackage::with(['freelancer', 'subcategory', 'services'])->find($id);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+            if (!$package) {
+                return response()->json(['message' => 'Package not found'], 404);
+            }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+            // Manually construct the response to ensure correct JSON structure
+            $data = [
+                'id' => $package->id,
+                'title' => $package->title,
+                'description' => $package->description,
+                'freelancer' => [
+                    'id' => $package->freelancer->id,
+                    'name' => $package->freelancer->name,
+                ],
+                'subcategory' => [
+                    'name' => $package->subcategory->name,
+                ],
+                'services' => $package->services->map(function ($service) {
+                    return [
+                        'title' => $service->title,
+                    ];
+                }),
+            ];
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+            return response()->json(['data' => $data]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error fetching package details',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

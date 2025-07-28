@@ -13,12 +13,23 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('service_id')->constrained('services')->onUpdate('cascade')->onDelete('restrict');
-            $table->foreignId('package_id')->constrained('service_packages')->onUpdate('cascade')->onDelete('restrict');
-            $table->text('description');
-            $table->string('file_url')->nullable();
-            $table->enum('status', ['pending', 'in_progress', 'done'])->default('pending');
+
+            // Relasi ke freelancer dan paket yang dipilih
+            $table->foreignId('freelancer_id')->constrained()->onDelete('cascade');
+            $table->foreignId('service_package_id')->constrained()->onDelete('cascade');
+
+            // Info pembeli
+            $table->string('buyer_name');
+            $table->string('buyer_email');
+            $table->string('buyer_whatsapp');
+
+            // Detail pekerjaan yang diberikan
+            $table->text('job_description')->nullable();
+            $table->string('attachment_file')->nullable(); // path upload file
+
+            // Status order
+            $table->enum('status', ['pending', 'in_progress', 'completed', 'cancelled'])->default('pending');
+
             $table->timestamps();
         });
     }

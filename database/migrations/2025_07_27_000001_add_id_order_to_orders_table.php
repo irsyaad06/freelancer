@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('service_galleries', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('service_id')->constrained('services')->onUpdate('cascade')->onDelete('cascade');
-            $table->string('image_url');
-            $table->timestamps();
+        Schema::table('orders', function (Blueprint $table) {
+            $table->string('id_order')->unique()->after('id');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('service_gallery');
+        Schema::table('orders', function (Blueprint $table) {
+            $table->dropColumn('id_order');
+        });
     }
 };

@@ -16,10 +16,23 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class SubcategoryResource extends Resource
 {
     protected static ?string $model = Subcategory::class;
+    public static function getModelLabel(): string
+    {
+        return 'Sub Kategori / Jasa';
+    }
 
-    protected static ?int $navigationSort = 2;
+    public static function getPluralModelLabel(): string
+    {
+        return 'Sub Kategori / Jasa';
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Sub Kategori / Jasa';
+    }
+    protected static ?int $navigationSort = 1;
     protected static ?string $navigationGroup = 'Manajemen Layanan';
-    protected static ?string $navigationLabel = 'Sub Kategori';
+    protected static ?string $navigationLabel = 'Jasa';
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
 
@@ -28,15 +41,30 @@ class SubcategoryResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Card::make()->schema([
-                    Forms\Components\TextInput::make('name')->required(),
                     Forms\Components\Select::make('category_id')
                         ->relationship('category', 'name')
                         ->searchable()
                         ->preload()
                         ->native(false)
                         ->required(),
-                ]),
 
+                    Forms\Components\Repeater::make('subcategories')
+                        ->schema([
+                            Forms\Components\TextInput::make('name')
+                                ->required()
+                                ->label('Nama Sub Kategori'),
+                        ])
+                        ->label('Sub Kategori')
+                        ->addActionLabel('Tambah Sub Kategori')
+                        ->required()
+                        ->columnSpanFull()
+                        ->hiddenOn('edit'),
+
+                    Forms\Components\TextInput::make('name')
+                        ->required()
+                        ->label('Nama Sub Kategori')
+                        ->hiddenOn('create'),
+                ]),
             ]);
     }
 

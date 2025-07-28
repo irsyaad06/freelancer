@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'slug','icon'];
 
     protected static function booted()
     {
@@ -16,6 +16,7 @@ class Category extends Model
             $category->slug = Str::slug($category->name);
         });
     }
+
     public function subcategories(): HasMany
     {
         return $this->hasMany(Subcategory::class);

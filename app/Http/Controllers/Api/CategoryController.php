@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -12,38 +13,31 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $category = Category::all();
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Berhasil mendapatkan data kategori',
+            'data' => $category
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
-    }
+        $category = Category::find($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        if (!$category) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Kategori tidak ditemukan',
+                'data' => null
+            ], 404);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json([
+            'code' => 200,
+            'message' => 'Berhasil mendapatkan detail kategori',
+            'data' => $category
+        ]);
     }
 }
