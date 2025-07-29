@@ -84,11 +84,44 @@ class FreelancerPhotoResource extends Resource
     {
         return $table
             ->defaultGroup('freelancer.name')
-            ->columns([
-                ImageColumn::make('image_path')->label('Foto'),
-                TextColumn::make('freelancer.name')->label('Freelancer'),
+            ->groups([
+                Tables\Grouping\Group::make('freelancer_and_subcategory')
+                    ->label('Freelancer & Subkategori')
+                    ->getTitleFromRecordUsing(function ($record) {
+                        return $record->freelancer->name . ' & ' . $record->subcategory->name;
+                    })
+                    ->orderQueryUsing(function (Builder $query, string $direction) {
+                        return $query
+                            ->join('freelancers', 'freelancer_photos.freelancer_id', '=', 'freelancers.id')
+                            ->join('subcategories', 'freelancer_photos.subcategory_id', '=', 'subcategories.id')
+                            ->orderBy('freelancers.name', $direction)
+                            ->orderBy('subcategories.name', $direction);
+                    }),
             ])
-            ->filters([])
+            ->columns([
+                ImageColumn::make('image_path')
+                    ->label('Foto')
+                    ->size(100),
+                TextColumn::make('freelancer.name')
+                    ->label('Freelancer')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('subcategory.name')
+                    ->label('Sub Kategori')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('title')
+                    ->label('Judul')
+                    ->searchable()
+                    ->limit(50),
+            ])
+            ->filters([
+                Tables\Filters\SelectFilter::make('subcategory')
+                    ->relationship('subcategory', 'name')
+                    ->label('Filter Sub Kategori')
+                    ->searchable()
+                    ->preload(),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),

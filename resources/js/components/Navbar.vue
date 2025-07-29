@@ -8,13 +8,14 @@
         >
             <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
                 <img
-                    src="https://flowbite.com/docs/images/logo.svg"
+                    v-if="setting && setting.logo_web"
+                    :src="setting.logo_web"
                     class="h-8"
-                    alt="Flowbite Logo"
+                    :alt="setting.nama_web"
                 />
                 <span
                     class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
-                    >FindLancer</span
+                    >{{ setting ? setting.nama_web : "FindLancer" }}</span
                 >
             </a>
             <div
@@ -98,9 +99,18 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { useTheme } from "../composables/useTheme";
+import { onMounted, computed } from "vue";
+import { useSettingStore } from "../stores/settingStore";
 
 const route = useRoute();
 const { isDark, toggleTheme } = useTheme();
+const settingStore = useSettingStore();
+
+const setting = computed(() => settingStore.setting);
+
+onMounted(() => {
+    settingStore.fetchSetting();
+});
 </script>
 
 <style scoped>

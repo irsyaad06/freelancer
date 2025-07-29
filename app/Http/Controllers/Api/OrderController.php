@@ -32,7 +32,7 @@ class OrderController extends Controller
             'buyer_email' => 'required|email|max:255',
             'buyer_whatsapp' => 'required|string|max:20',
             'job_description' => 'required|string',
-            'attachment_file' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240'
+            'attachment_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240' //ganti 20mb
         ]);
 
         $validated['status'] = 'pending';

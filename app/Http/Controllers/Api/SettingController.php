@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\WebSetting;
 use Illuminate\Http\Request;
 
 class SettingController extends Controller
@@ -12,38 +13,11 @@ class SettingController extends Controller
      */
     public function index()
     {
-        //
+        $setting = WebSetting::first();
+        if ($setting && $setting->logo_web) {
+            $setting->logo_web = asset('storage/' . $setting->logo_web);
+        }
+        return response()->json($setting);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ServiceGalleryController;
 use App\Http\Controllers\Api\ServicePackageController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\SettingController;
 
 
 Route::prefix('kategori')->group(function () {
@@ -43,3 +44,5 @@ Route::prefix('pesanan')->group(function () {
     Route::put('/{id}', [OrderController::class, 'update']);
     Route::delete('/{id}', [OrderController::class, 'destroy']);
 });
+
+Route::get('pengaturan', [SettingController::class, 'index']);
