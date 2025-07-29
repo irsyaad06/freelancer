@@ -68,7 +68,19 @@ export const useFreelancerStore = defineStore('freelancer', {
       try {
         const response = await api.get(`/jasa/${subcategoryId}/freelancer/${freelancerId}`);
         if (response.data.code === 200) {
-          this.freelancerDetail = response.data.data;
+          const detail = response.data.data;
+          
+          // Sort service packages
+          if (detail.servicePackages) {
+            const packageOrder = { 'starter': 1, 'standard': 2, 'premium': 3 };
+            detail.servicePackages.sort((a, b) => {
+              const orderA = packageOrder[a.name.toLowerCase()] || 99;
+              const orderB = packageOrder[b.name.toLowerCase()] || 99;
+              return orderA - orderB;
+            });
+          }
+          
+          this.freelancerDetail = detail;
         } else {
           throw new Error(response.data.message || 'Failed to fetch freelancer detail');
         }

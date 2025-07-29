@@ -230,7 +230,8 @@ class OrderResource extends Resource
                     Tables\Actions\ViewAction::make()
                         ->modalHeading('Detail Order'),
 
-                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                        ->modalHeading(fn (Order $record) => 'Apakah yakin menghapus orderan ' . $record->id_order . '?'),
                 ]),
             ])
             ->bulkActions([
