@@ -49,7 +49,7 @@ class WebSettingResource extends Resource
                     ->label('Email'),
 
                 Forms\Components\TextInput::make('telepon_web')
-                    ->label('Telepon'),
+                    ->label('No Telepon'),
 
                 Forms\Components\TextInput::make('facebook_web')
                     ->label('Facebook'),
