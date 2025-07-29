@@ -35,6 +35,7 @@ class UserResource extends Resource
                     ->maxLength(190),
                 Forms\Components\TextInput::make('password')
                     ->password()
+                    ->revealable()
                     ->nullable()
                     ->maxLength(255),
                 // Forms\Components\Select::make('role')
@@ -45,9 +46,9 @@ class UserResource extends Resource
                 //     ])
                 //     ->default('freelancer')
                 //     ->required(),
-                Forms\Components\TextInput::make('no_whatsapp')
-                    ->label('No. WhatsApp')
-                    ->maxLength(20),
+                // Forms\Components\TextInput::make('no_whatsapp')
+                //     ->label('No. WhatsApp')
+                //     ->maxLength(20),
                 // Forms\Components\FileUpload::make('profile_photo')
                 //     ->image()
                 //     ->directory('profile-photos'),
@@ -61,7 +62,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('email'),
                 // Tables\Columns\TextColumn::make('role'),
-                Tables\Columns\TextColumn::make('no_whatsapp'),
+                // Tables\Columns\TextColumn::make('no_whatsapp'),
                 // Tables\Columns\ImageColumn::make('profile_photo'),
             ])
             ->filters([
