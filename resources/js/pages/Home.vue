@@ -11,9 +11,12 @@
         <div class="p-8">
             <CategoryButtons />
         </div>
-        <div v-if="selectedSubcategory" class="text-gray-800">
+        <div v-if="selectedSubcategory" class="text-gray-800 mb-4">
             Jasa yang di pilih :
-            <span class="text-blue-600 bg-transparent border-1 border-blue-700 rounded-md p-2">{{ selectedSubcategory.name }}</span>
+            <span
+                class="text-blue-600 bg-transparent border-1 border-blue-700 rounded-md p-2"
+                >{{ selectedSubcategory.name }}</span
+            >
         </div>
         <div v-if="loading" class="flex justify-center items-center py-10">
             <div
@@ -35,14 +38,27 @@
         <!-- Data State -->
         <div
             v-else-if="freelancers.length > 0"
-            class="max-w-screen-xl flex mx-auto p-4"
+            class="flex justify-center items-center"
         >
-            <FreelancerCard
-                v-for="f in freelancers"
-                :key="f.id"
-                :freelancer="f"
-                :selectedSubcategory="selectedSubcategory"
-            />
+            <div
+                :class="[
+                    'grid gap-4 p-4 max-w-7xl mx-auto',
+                    freelancers.length === 1 &&
+                        'grid-cols-1 justify-items-center',
+                    freelancers.length === 2 &&
+                        'md:grid-cols-2 justify-items-center',
+                    freelancers.length === 3 &&
+                        'md:grid-cols-3 justify-items-center',
+                    freelancers.length >= 4 && 'md:grid-cols-2 lg:grid-cols-4',
+                ]"
+            >
+                <FreelancerCard
+                    v-for="f in freelancers"
+                    :key="f.id"
+                    :freelancer="f"
+                    :selectedSubcategory="selectedSubcategory"
+                />
+            </div>
         </div>
 
         <!-- Empty State -->
