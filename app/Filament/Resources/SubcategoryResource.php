@@ -72,14 +72,20 @@ class SubcategoryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('no')->searchable()->rowIndex(),
+                Tables\Columns\TextColumn::make('no')->rowIndex(),
                 Tables\Columns\TextColumn::make('name')->searchable(),
-                Tables\Columns\TextColumn::make('category.name')->label('Category'),
+                Tables\Columns\TextColumn::make('category.name')->label('Category')->searchable(),
                 // Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
 
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('category')
+                    ->relationship('category', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->label('Filter by Category')
+                    ->multiple()
+                    ->indicator('Category'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

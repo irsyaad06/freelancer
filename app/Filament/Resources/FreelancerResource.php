@@ -74,6 +74,7 @@ class FreelancerResource extends Resource
             ImageColumn::make('profile_photo')->label('Foto')->circular(),
             TextColumn::make('name')->searchable()->sortable()->label('Nama'),
             TextColumn::make('subcategories.name')->searchable()->sortable()->label('Jasa'),
+            TextColumn::make('subcategories.category.name')->searchable()->sortable()->label('Kategori'),
             TextColumn::make('email')->sortable(),
             TextColumn::make('phone_number')->label('WhatsApp'),
             TextColumn::make('rating')->sortable(),
@@ -82,7 +83,16 @@ class FreelancerResource extends Resource
                 ->boolean(),
         ])->defaultSort('name')
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('category')
+                    ->label('Kategori')
+                    ->relationship('subcategories.category', 'name')
+                    ->searchable()
+                    ->preload(),
+                Tables\Filters\SelectFilter::make('subcategory')
+                    ->label('Sub Kategori')
+                    ->relationship('subcategories', 'name')
+                    ->searchable()
+                    ->preload(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

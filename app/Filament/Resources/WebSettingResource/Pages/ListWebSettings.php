@@ -10,6 +10,16 @@ class ListWebSettings extends ListRecords
 {
     protected static string $resource = WebSettingResource::class;
 
+    public function mount(): void
+    {
+        $setting = \App\Models\WebSetting::first();
+        if ($setting) {
+            $this->redirect(static::getResource()::getUrl('edit', ['record' => $setting->id]));
+            return;
+        }
+        $this->redirect(static::getResource()::getUrl('create'));
+    }
+
     protected function getHeaderActions(): array
     {
         return [

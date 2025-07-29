@@ -20,6 +20,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Repeater;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Support\RawJs;
 
 class ServicePackageResource extends Resource
 {
@@ -79,13 +80,29 @@ class ServicePackageResource extends Resource
                         'Premium' => 'Premium',
                     ])
                     ->required()
-                    ->native(false),
+                    ->native(false)
+                    ->unique(
+                        table: 'service_packages',
+                        column: 'title',
+                        ignoreRecord: true,
+                        modifyRuleUsing: function ($rule, callable $get) {
+                            return $rule->where('freelancer_id', $get('freelancer_id'))
+                                ->where('subcategory_id', $get('subcategory_id'));
+                        }
+                    )
+                    ->validationMessages([
+                        'unique' => 'Paket ini sudah ada untuk freelancer ini dalam subkategori yang sama.',
+                    ]),
 
 
                 TextInput::make('price')
                     ->label('Harga Paket')
                     ->numeric()
-                    ->required(),
+                    ->required()
+                    ->prefix('Rp')
+                    ->mask(RawJs::make('$money($input)'))
+                    ->stripCharacters([',', '.'])
+                    ->formatStateUsing(fn (?string $state): string => $state ? number_format((int) $state, 0, ',', '.') : ''),
 
                 Textarea::make('description')
                     ->label('Deskripsi')
@@ -128,7 +145,10 @@ class ServicePackageResource extends Resource
                 })->badge(),
                 Tables\Columns\TextColumn::make('freelancer.name')->label('Freelancer'),
                 Tables\Columns\TextColumn::make('subcategory.name')->label('Subkategori'),
-                Tables\Columns\TextColumn::make('price')->label('Harga'),
+                Tables\Columns\TextColumn::make('price')
+                    ->label('Harga')
+                    ->money('IDR')
+                    ->formatStateUsing(fn (?string $state): string => $state ? 'Rp ' . number_format((int) $state, 0, ',', '.') : 'Rp 0'),
                 Tables\Columns\TextColumn::make('services_count')
                     ->counts('services')
                     ->label('Jumlah Layanan'),
