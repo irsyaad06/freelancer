@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->string('id_order')->unique();
 
             // Relasi ke freelancer dan paket yang dipilih
             $table->foreignId('freelancer_id')->constrained()->onDelete('cascade');

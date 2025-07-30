@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->string('id_order')->unique()->after('id');
+        Schema::create('terms_and_conditions', function (Blueprint $table) {
+            $table->id();
+            $table->longText('content')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('id_order');
-        });
+        Schema::dropIfExists('terms_and_conditions');
     }
 };
