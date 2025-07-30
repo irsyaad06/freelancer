@@ -10,7 +10,7 @@ class FreelancerController extends Controller
 {
     public function index()
     {
-        $freelancer = Freelancer::with(['servicePackages' => function ($query) {
+        $freelancer = Freelancer::where('is_verified', true)->with(['servicePackages' => function ($query) {
             $query->select('id', 'freelancer_id', 'price')->orderBy('price', 'asc');
         }])->get([
             'id',
@@ -39,11 +39,42 @@ class FreelancerController extends Controller
 
     public function freelancerBySubcategory(Request $request, $subcategory_id)
     {
-        $freelancer = Freelancer::whereHas('subcategories', function ($query) use ($subcategory_id) {
+        $freelancer = Freelancer::where('is_verified', true)->whereHas('subcategories', function ($query) use ($subcategory_id) {
             $query->where('subcategories.id', $subcategory_id);
         })->with(['servicePackages' => function ($query) {
             $query->select('id', 'freelancer_id', 'price')->orderBy('price', 'asc');
         }])->get([
+            'id',
+            'name',
+            'profile_photo',
+            'rating',
+            'is_verified'
+        ])->map(function ($item) {
+            $minPrice = $item->servicePackages->min('price');
+            return [
+                'id'            => $item->id,
+                'name'          => $item->name,
+                'profile_photo' => $item->profile_photo,
+                'rating'        => $item->rating,
+                'is_verified'   => $item->is_verified ? 'Verified' : 'Unverified',
+                'price'         => $minPrice ? (int) $minPrice : 0,
+            ];
+        });
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Berhasil mendapatkan data Freelancer',
+            'data' => $freelancer
+        ]);
+    }
+
+    public function top3FreelancerBySubcategory(Request $request, $subcategory_id)
+    {
+        $freelancer = Freelancer::where('is_verified', true)->whereHas('subcategories', function ($query) use ($subcategory_id) {
+            $query->where('subcategories.id', $subcategory_id);
+        })->with(['servicePackages' => function ($query) {
+            $query->select('id', 'freelancer_id', 'price')->orderBy('price', 'asc');
+        }])->orderBy('rating', 'desc')->limit(3)->get([
             'id',
             'name',
             'profile_photo',
