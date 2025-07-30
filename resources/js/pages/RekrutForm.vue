@@ -25,7 +25,7 @@
                             {{ servicePackage.title }}
                         </h2>
 
-                        <p class="text-gray-600 mb-4">
+                        <p class="text-gray-600 mb-4 break-words break-all whitespace-pre-line">
                             {{ servicePackage.description }}
                         </p>
 
@@ -44,8 +44,11 @@
                                     >Jasa</span
                                 >
                                 <p>:</p>
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 ml-1">
-                                  Pembuatan  {{ servicePackage.subcategory.name }}
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 ml-1"
+                                >
+                                    Pembuatan
+                                    {{ servicePackage.subcategory.name }}
                                 </span>
                             </div>
                             <div class="flex flex-wrap mt-2">
@@ -240,7 +243,9 @@
                                     : 'bg-gray-400 cursor-not-allowed',
                             ]"
                         >
-                            {{ isSubmitting ? "Mengirim..." : "Lanjutkan" }}
+                            {{
+                                isSubmitting ? "Mengirim..." : "Pesan Sekarang"
+                            }}
                         </button>
                     </form>
                 </div>

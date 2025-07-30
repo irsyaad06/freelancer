@@ -20,7 +20,7 @@
                     <span class="text-2xl font-semibold p-2">Detail Services</span>
                     <div class="p-2">
                         <div v-if="selectedPackage">
-                            <p class="text-gray-700">
+                            <p class="text-gray-700 break-words break-all whitespace-pre-line">
                                 {{ selectedPackage.description }}
                             </p>
                         </div>

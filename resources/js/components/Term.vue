@@ -1,132 +1,80 @@
-    <template>
-        <!-- Main modal -->
-        <div
-            v-if="show"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-blue-600/50"
-            @click.self="$emit('close')"
-        >
-            <div class="relative p-4 w-full max-w-xl max-h-[80vh]">
-                <!-- Modal content -->
-                <div
-                    class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700 flex flex-col"
-                    style="max-height: 80vh;"
-                >
-                    <!-- Modal header -->
-                    <div
-                        class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200 flex-shrink-0"
-                    >
-                        <h3
-                            class="text-xl font-semibold text-gray-900 dark:text-white"
-                        >
-                            Syarat dan Ketentuan
-                        </h3>
-                        <button
-                            type="button"
-                            @click="$emit('close')"
-                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                        >
-                            <svg
-                                class="w-3 h-3"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 14 14"
-                            >
-                                <path
-                                    stroke="currentColor"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                                />
-                            </svg>
-                            <span class="sr-only">Close modal</span>
-                        </button>
-                    </div>
-                    <!-- Modal body -->
-                    <div class="p-4 md:p-5 space-y-4 overflow-y-auto flex-1">
-                        <h4 class="font-semibold text-lg mb-2">1. Ketentuan Umum</h4>
-                        <p
-                            class="text-base leading-relaxed text-gray-500 dark:text-gray-400"
-                        >
-                            Dengan menggunakan layanan ini, Anda setuju untuk mematuhi semua syarat dan ketentuan yang berlaku. 
-                            Layanan ini disediakan oleh platform freelancer untuk memfasilitasi transaksi antara klien dan freelancer.
-                        </p>
-                        
-                        <h4 class="font-semibold text-lg mb-2">2. Hak dan Kewajiban</h4>
-                        <p
-                            class="text-base leading-relaxed text-gray-500 dark:text-gray-400"
-                        >
-                            - Klien wajib memberikan informasi yang akurat dan lengkap mengenai proyek yang akan dikerjakan.<br>
-                            - Freelancer berkewajiban untuk menyelesaikan pekerjaan sesuai dengan kesepakatan yang telah disetujui.<br>
-                            - Pembayaran akan diproses melalui platform dengan sistem escrow untuk keamanan kedua belah pihak.
-                        </p>
-
-                        <h4 class="font-semibold text-lg mb-2">3. Kebijakan Pembatalan</h4>
-                        <p
-                            class="text-base leading-relaxed text-gray-500 dark:text-gray-400"
-                        >
-                            Pembatalan dapat dilakukan sesuai dengan ketentuan yang telah disepakati dalam kontrak kerja. 
-                            Setiap pembatalan akan dikenakan biaya administrasi sesuai dengan kebijakan platform.
-                        </p>
-
-                        <h4 class="font-semibold text-lg mb-2">4. Privasi dan Keamanan</h4>
-                        <p
-                            class="text-base leading-relaxed text-gray-500 dark:text-gray-400"
-                        >
-                            Kami menjaga kerahasiaan data pribadi Anda sesuai dengan kebijakan privasi kami. 
-                            Semua transaksi dilakukan dengan sistem keamanan yang terenkripsi.
-                        </p>
-
-                        <h4 class="font-semibold text-lg mb-2">5. Kebijakan Pembayaran</h4>
-                        <p
-                            class="text-base leading-relaxed text-gray-500 dark:text-gray-400"
-                        >
-                            - Pembayaran dilakukan melalui platform dengan sistem milestone.<br>
-                            - Dana akan disimpan dalam escrow hingga pekerjaan selesai sesuai kesepakatan.<br>
-                            - Refund dapat diajukan sesuai dengan ketentuan yang berlaku.
-                        </p>
-
-                        <h4 class="font-semibold text-lg mb-2">6. Penyelesaian Sengketa</h4>
-                        <p
-                            class="text-base leading-relaxed text-gray-500 dark:text-gray-400"
-                        >
-                            Setiap sengketa akan diselesaikan melalui mediasi terlebih dahulu. 
-                            Jika tidak tercapai kesepakatan, maka akan dilakukan arbitrase sesuai dengan hukum yang berlaku.
-                        </p>
-
-                        <h4 class="font-semibold text-lg mb-2">7. Perubahan Syarat</h4>
-                        <p
-                            class="text-base leading-relaxed text-gray-500 dark:text-gray-400"
-                        >
-                            Kami berhak untuk mengubah syarat dan ketentuan ini sewaktu-waktu. 
-                            Perubahan akan diberitahukan melalui email atau notifikasi dalam platform.
-                        </p>
-                    </div>
-                    <!-- Modal footer -->
-                    <div
-                        class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600 flex-shrink-0"
-                    >
-                        <button
-                            @click="$emit('close')"
-                            type="button"
-                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                        >
-                            Saya Setuju
-                        </button>
-                    </div>
-                </div>
-            </div>
+<template>
+  <div
+    v-if="show"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+    @click.self="$emit('close')"
+  >
+    <div class="relative w-full max-w-xl p-4" style="max-height: 80vh;">
+      <div class="relative flex flex-col bg-white rounded-lg shadow dark:bg-gray-700" style="max-height: 80vh;">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between flex-shrink-0 p-4 border-b rounded-t dark:border-gray-600">
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+            Syarat dan Ketentuan
+          </h3>
+          <button
+            @click="$emit('close')"
+            type="button"
+            class="inline-flex items-center justify-center w-8 h-8 text-sm text-gray-400 bg-transparent rounded-lg hover:bg-gray-200 hover:text-gray-900 ms-auto dark:hover:bg-gray-600 dark:hover:text-white"
+          >
+            <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
         </div>
-    </template>
 
-    <script setup>
-    defineProps({
-        show: {
-            type: Boolean,
-            default: false
-        }
-    });
+        <!-- Body -->
+        <div class="flex-1 p-4 overflow-y-auto space-y-4">
+          <div v-if="loading" class="py-10 text-center">
+            <div class="inline-block w-8 h-8 border-b-2 rounded-full animate-spin border-blue-600"></div>
+            <p class="mt-2 text-gray-500">Memuat...</p>
+          </div>
 
-    defineEmits(['close']);
-    </script>
+          <div v-else-if="error" class="py-10 text-center text-red-500">
+            <p>Gagal memuat syarat dan ketentuan.</p>
+            <button @click="retry"
+              class="mt-3 px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600">
+              Coba Lagi
+            </button>
+          </div>
+
+          <div v-else-if="term" class="prose max-w-none dark:prose-invert" v-html="term.content"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex items-center flex-shrink-0 p-4 border-t border-gray-200 rounded-b dark:border-gray-600">
+          <button
+            @click="$emit('close')"
+            type="button"
+            class="px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Saya Setuju
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { onMounted } from "vue";
+import { storeToRefs } from "pinia";
+import { useTermTC } from "../stores/termAndConditionStore";
+
+const props = defineProps({
+  show: { type: Boolean, default: false },
+});
+defineEmits(["close"]);
+
+const termStore = useTermTC();
+const { term, loading, error } = storeToRefs(termStore);
+
+const retry = () => termStore.fetchTerm(true);
+
+// Auto-fetch saat komponen mount (sekali saja)
+onMounted(() => {
+  termStore.fetchTerm();
+});
+</script>

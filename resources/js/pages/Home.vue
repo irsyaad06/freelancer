@@ -1,7 +1,7 @@
 <template>
     <div class="text-center mt-10 pt-10 mb-10 pb-10">
         <h2 class="text-3xl font-bold text-blue-600 mt-10">
-            Welcome to FindLancer
+            Welcome to {{ setting ? setting.nama_web : "FindLancer" }}
         </h2>
         <p class="mt-2 text-gray-700">
             Find the best freelancers for your project.
@@ -9,13 +9,12 @@
 
         <SearchBar />
         <div class="p-8">
-            <CategoryButtons @subcategories-updated="handleSubcategoriesUpdate" />
+            <CategoryButtons
+                @subcategories-updated="handleSubcategoriesUpdate"
+            />
         </div>
         <!-- Subcategory Buttons Section -->
-        <section
-            v-if="subcategoriesToShow.length > 0"
-            class="text-center py-4"
-        >
+        <section v-if="subcategoriesToShow.length > 0" class="text-center py-4">
             <div class="flex justify-center flex-wrap gap-2 px-4">
                 <button
                     v-for="sub in subcategoriesToShow"
@@ -75,28 +74,70 @@
         </div>
 
         <!-- Data State -->
-        <div
-            v-else-if="freelancers.length > 0"
-            class="flex justify-center items-center"
-        >
-            <div
-                :class="[
-                    'grid gap-4 p-4 max-w-7xl mx-auto',
-                    freelancers.length === 1 &&
-                        'grid-cols-1 justify-items-center',
-                    freelancers.length === 2 &&
-                        'md:grid-cols-2 justify-items-center',
-                    freelancers.length === 3 &&
-                        'md:grid-cols-2 lg:grid-cols-3 justify-items-center',
-                    freelancers.length >= 4 && 'md:grid-cols-2 lg:grid-cols-4',
-                ]"
-            >
-                <FreelancerCard
-                    v-for="f in freelancers"
-                    :key="f.id"
-                    :freelancer="f"
-                    :selectedSubcategory="freelancerStore.selectedSubcategory"
-                />
+
+        <div v-else-if="freelancers.length > 0" class="max-w-7xl mx-auto px-4">
+            <!-- Top 3 Freelancers Section -->
+            <div v-if="top3Freelancers.length > 0" class="mb-10">
+                <h3
+                    class="text-2xl font-bold text-gray-800 dark:text-white mb-4"
+                >
+                    Pilihan Terbaik!
+                </h3>
+                <div class="flex justify-center items-center">
+                    <div
+                        :class="[
+                            'grid gap-4 p-4 max-w-7xl mx-auto',
+                            top3Freelancers.length === 1 &&
+                                'grid-cols-1 justify-items-center',
+                            top3Freelancers.length === 2 &&
+                                'md:grid-cols-2 justify-items-center',
+                            top3Freelancers.length === 3 &&
+                                'md:grid-cols-2 lg:grid-cols-3 justify-items-center',
+                        ]"
+                    >
+                        <FreelancerCard
+                            v-for="f in top3Freelancers"
+                            :key="`top-${f.id}`"
+                            :freelancer="f"
+                            :selectedSubcategory="
+                                freelancerStore.selectedSubcategory
+                            "
+                            :is-top-freelancer="true"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other Freelancers Section -->
+            <div v-if="otherFreelancers.length > 0">
+                <h3
+                    v-if="top3Freelancers.length > 0"
+                    class="text-2xl font-bold text-gray-800 dark:text-white mb-4 mt-4"
+                >
+                    Jelajahi Lainnya
+                </h3>
+                <div class="flex justify-center items-center">
+                    <div
+                        :class="[
+                            'grid gap-4 p-4 max-w-7xl mx-auto',
+                            freelancers.length === 1 &&
+                                'grid-cols-1 justify-items-center',
+                            freelancers.length === 2 &&
+                                'md:grid-cols-2 justify-items-center',
+                            freelancers.length === 3 &&
+                                'md:grid-cols-2 lg:grid-cols-3 justify-items-center',
+                        ]"
+                    >
+                        <FreelancerCard
+                            v-for="f in otherFreelancers"
+                            :key="f.id"
+                            :freelancer="f"
+                            :selectedSubcategory="
+                                freelancerStore.selectedSubcategory
+                            "
+                        />
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -107,17 +148,21 @@
     </div>
 </template>
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useFreelancerStore } from "../stores/freelancerStore";
+import { useSettingStore } from "../stores/settingStore";
 import CategoryButtons from "../components/CategoryButtons.vue";
 import FreelancerCard from "../components/FreelancerCard.vue";
 import SearchBar from "../components/SearchBar.vue";
 
 const freelancerStore = useFreelancerStore();
-const { freelancers, loading, error } = storeToRefs(freelancerStore);
+const { freelancers, top3Freelancers, otherFreelancers, loading, error } =
+    storeToRefs(freelancerStore);
 const subcategoriesToShow = ref([]);
 const isCategorySelected = ref(false);
+const settingStore = useSettingStore();
+const setting = computed(() => settingStore.setting);
 
 const handleSubcategoriesUpdate = (payload) => {
     subcategoriesToShow.value = payload.subcategories;
@@ -134,5 +179,6 @@ const fetchFreelancers = () => {
 
 onMounted(() => {
     fetchFreelancers();
+    settingStore.fetchSetting(); // Action dipanggil di sini
 });
 </script>

@@ -10,7 +10,7 @@ use App\Http\Controllers\Api\ServiceGalleryController;
 use App\Http\Controllers\Api\ServicePackageController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\SettingController;
-
+use App\Http\Controllers\Api\TermController;
 
 Route::prefix('kategori')->group(function () {
     Route::get('/', [CategoryController::class, 'index']);
@@ -25,7 +25,6 @@ Route::prefix('subkategori')->group(function () {
 Route::prefix('freelancer')->group(function () {
     Route::get('/', [FreelancerController::class, 'index']);
     Route::get('/subkategori/{subcategory_id}', [FreelancerController::class, 'freelancerBySubcategory']);
-    Route::get('/top3/subkategori/{subcategory_id}', [FreelancerController::class, 'top3FreelancerBySubcategory']);
     // Route::get('/{id}', [FreelancerController::class, 'show']);
 });
 Route::prefix('jasa')->group(function () {
@@ -46,3 +45,4 @@ Route::prefix('pesanan')->group(function () {
 });
 
 Route::get('pengaturan', [SettingController::class, 'index']);
+Route::get('term', [TermController::class, 'index']);
