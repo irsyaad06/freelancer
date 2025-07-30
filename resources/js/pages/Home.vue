@@ -1,7 +1,7 @@
 <template>
     <div class="text-center mt-10 pt-10 mb-10 pb-10">
         <h2 class="text-3xl font-bold text-blue-600 mt-10">
-            Welcome to FindLancer
+            Welcome to {{ setting ? setting.nama_web : "FindLancer" }}
         </h2>
         <p class="mt-2 text-gray-700">
             Find the best freelancers for your project.
@@ -9,13 +9,12 @@
 
         <SearchBar />
         <div class="p-8">
-            <CategoryButtons @subcategories-updated="handleSubcategoriesUpdate" />
+            <CategoryButtons
+                @subcategories-updated="handleSubcategoriesUpdate"
+            />
         </div>
         <!-- Subcategory Buttons Section -->
-        <section
-            v-if="subcategoriesToShow.length > 0"
-            class="text-center py-4"
-        >
+        <section v-if="subcategoriesToShow.length > 0" class="text-center py-4">
             <div class="flex justify-center flex-wrap gap-2 px-4">
                 <button
                     v-for="sub in subcategoriesToShow"
@@ -75,6 +74,7 @@
         </div>
 
         <!-- Data State -->
+
         <div
             v-else-if="freelancers.length > 0"
             class="flex justify-center items-center"
@@ -91,6 +91,12 @@
                     freelancers.length >= 4 && 'md:grid-cols-2 lg:grid-cols-4',
                 ]"
             >
+                <Top3FreelancerCard
+                    v-for="f in topFreelancers"
+                    :key="`top-${f.id}`"
+                    :freelancer="f"
+                    :selectedSubcategory="freelancerStore.selectedSubcategory"
+                />
                 <FreelancerCard
                     v-for="f in freelancers"
                     :key="f.id"
@@ -107,17 +113,22 @@
     </div>
 </template>
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useFreelancerStore } from "../stores/freelancerStore";
+import { useSettingStore } from "../stores/settingStore";
 import CategoryButtons from "../components/CategoryButtons.vue";
 import FreelancerCard from "../components/FreelancerCard.vue";
+import Top3FreelancerCard from "../components/Top3FreelancerCard.vue";
 import SearchBar from "../components/SearchBar.vue";
 
 const freelancerStore = useFreelancerStore();
-const { freelancers, loading, error } = storeToRefs(freelancerStore);
+const { freelancers, topFreelancers, loading, error } =
+    storeToRefs(freelancerStore);
 const subcategoriesToShow = ref([]);
 const isCategorySelected = ref(false);
+const settingStore = useSettingStore();
+const setting = computed(() => settingStore.setting);
 
 const handleSubcategoriesUpdate = (payload) => {
     subcategoriesToShow.value = payload.subcategories;
@@ -134,5 +145,6 @@ const fetchFreelancers = () => {
 
 onMounted(() => {
     fetchFreelancers();
+    settingStore.fetchSetting(); // Action dipanggil di sini
 });
 </script>

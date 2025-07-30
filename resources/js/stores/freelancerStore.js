@@ -1,99 +1,142 @@
-import { defineStore } from 'pinia'
-import api from '../axios'
+import { defineStore } from "pinia";
+import api from "../axios";
 
-export const useFreelancerStore = defineStore('freelancer', {
-  state: () => ({
-    freelancers: [],
-    loading: false,
-    error: null,
-    selectedSubcategory: null,
-    freelancerDetail: null,
-  }),
+export const useFreelancerStore = defineStore("freelancer", {
+    state: () => ({
+        freelancers: [],
+        topFreelancers: [],
+        loading: false,
+        error: null,
+        selectedSubcategory: null,
+        freelancerDetail: null,
+    }),
 
-  getters: {
-    getFreelancers: (state) => state.freelancers,
-    isLoading: (state) => state.loading,
-    hasError: (state) => state.error !== null,
-  },
-
-  actions: {
-    async fetchFreelancers() {
-      this.loading = true
-      this.error = null
-      this.selectedSubcategory = null
-      
-      try {
-        // Use the main freelancer endpoint to get all freelancers
-        const response = await api.get('/freelancer')
-        
-        if (response.data.code === 200) {
-          this.freelancers = response.data.data
-        } else {
-          throw new Error(response.data.message || 'Failed to fetch freelancers')
-        }
-      } catch (error) {
-        this.error = error.message || 'An error occurred while fetching freelancers'
-        console.error('Error fetching freelancers:', error)
-      } finally {
-        this.loading = false
-      }
+    getters: {
+        getFreelancers: (state) => state.freelancers,
+        isLoading: (state) => state.loading,
+        hasError: (state) => state.error !== null,
     },
 
-    async fetchFreelancersBySubcategory(subcategory) {
-      this.loading = true
-      this.error = null
-      this.selectedSubcategory = subcategory
+    actions: {
+        async fetchFreelancers() {
+            this.loading = true;
+            this.error = null;
+            this.selectedSubcategory = null;
 
-      try {
-        const response = await api.get(`/freelancer/subkategori/${subcategory.id}`)
-        
-        if (response.data.code === 200) {
-          this.freelancers = response.data.data
-        } else {
-          throw new Error(response.data.message || 'Failed to fetch freelancers')
-        }
-      } catch (error) {
-        this.error = error.message || 'An error occurred while fetching freelancers'
-        console.error('Error fetching freelancers:', error)
-      } finally {
-        this.loading = false
-      }
+            try {
+                // Use the main freelancer endpoint to get all freelancers
+                const response = await api.get("/freelancer");
+
+                if (response.data.code === 200) {
+                    this.freelancers = response.data.data;
+                } else {
+                    throw new Error(
+                        response.data.message || "Failed to fetch freelancers"
+                    );
+                }
+            } catch (error) {
+                this.error =
+                    error.message ||
+                    "An error occurred while fetching freelancers";
+                console.error("Error fetching freelancers:", error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async fetchFreelancersBySubcategory(subcategory) {
+            this.loading = true;
+            this.error = null;
+            this.selectedSubcategory = subcategory;
+            this.freelancers = []; // Kosongkan data sebelumnya
+            this.topFreelancers = []; // Kosongkan data sebelumnya
+
+            try {
+                // Panggil kedua endpoint secara bersamaan
+                const [top3Response, freelancersResponse] = await Promise.all([
+                    api.get(`/freelancer/top3/subkategori/${subcategory.id}`),
+                    api.get(`/freelancer/subkategori/${subcategory.id}`),
+                ]);
+
+                // Proses dan simpan data Top 3
+                if (top3Response.data.code === 200) {
+                    this.topFreelancers = top3Response.data.data;
+                } else {
+                    console.warn(
+                        "Could not fetch top 3 freelancers:",
+                        top3Response.data.message
+                    );
+                }
+
+                // Proses dan simpan data freelancer biasa
+                if (freelancersResponse.data.code === 200) {
+                    this.freelancers = freelancersResponse.data.data;
+                } else {
+                    throw new Error(
+                        freelancersResponse.data.message ||
+                            "Failed to fetch freelancers"
+                    );
+                }
+            } catch (error) {
+                this.error =
+                    error.message ||
+                    "An error occurred while fetching freelancers";
+                console.error(
+                    "Error fetching freelancers by subcategory:",
+                    error
+                );
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async fetchFreelancerDetail(subcategoryId, freelancerId) {
+            this.loading = true;
+            this.error = null;
+            this.freelancerDetail = null;
+
+            try {
+                const response = await api.get(
+                    `/jasa/${subcategoryId}/freelancer/${freelancerId}`
+                );
+                if (response.data.code === 200) {
+                    const detail = response.data.data;
+
+                    // Sort service packages
+                    if (detail.servicePackages) {
+                        const packageOrder = {
+                            starter: 1,
+                            standard: 2,
+                            premium: 3,
+                        };
+                        detail.servicePackages.sort((a, b) => {
+                            const orderA =
+                                packageOrder[a.name.toLowerCase()] || 99;
+                            const orderB =
+                                packageOrder[b.name.toLowerCase()] || 99;
+                            return orderA - orderB;
+                        });
+                    }
+
+                    this.freelancerDetail = detail;
+                } else {
+                    throw new Error(
+                        response.data.message ||
+                            "Failed to fetch freelancer detail"
+                    );
+                }
+            } catch (error) {
+                this.error =
+                    error.message ||
+                    "An error occurred while fetching freelancer detail";
+                console.error("Error fetching freelancer detail:", error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        clearError() {
+            this.error = null;
+        },
     },
-
-    async fetchFreelancerDetail(subcategoryId, freelancerId) {
-      this.loading = true;
-      this.error = null;
-      this.freelancerDetail = null;
-
-      try {
-        const response = await api.get(`/jasa/${subcategoryId}/freelancer/${freelancerId}`);
-        if (response.data.code === 200) {
-          const detail = response.data.data;
-          
-          // Sort service packages
-          if (detail.servicePackages) {
-            const packageOrder = { 'starter': 1, 'standard': 2, 'premium': 3 };
-            detail.servicePackages.sort((a, b) => {
-              const orderA = packageOrder[a.name.toLowerCase()] || 99;
-              const orderB = packageOrder[b.name.toLowerCase()] || 99;
-              return orderA - orderB;
-            });
-          }
-          
-          this.freelancerDetail = detail;
-        } else {
-          throw new Error(response.data.message || 'Failed to fetch freelancer detail');
-        }
-      } catch (error) {
-        this.error = error.message || 'An error occurred while fetching freelancer detail';
-        console.error('Error fetching freelancer detail:', error);
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    clearError() {
-      this.error = null
-    }
-  }
-})
+});
