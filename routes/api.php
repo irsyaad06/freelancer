@@ -10,7 +10,7 @@ use App\Http\Controllers\Api\ServiceGalleryController;
 use App\Http\Controllers\Api\ServicePackageController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\SettingController;
-
+use App\Http\Controllers\Api\TermController;
 
 Route::prefix('kategori')->group(function () {
     Route::get('/', [CategoryController::class, 'index']);
@@ -46,3 +46,4 @@ Route::prefix('pesanan')->group(function () {
 });
 
 Route::get('pengaturan', [SettingController::class, 'index']);
+Route::get('term', [TermController::class, 'index']);
