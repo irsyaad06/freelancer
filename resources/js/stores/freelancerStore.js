@@ -4,7 +4,6 @@ import api from "../axios";
 export const useFreelancerStore = defineStore("freelancer", {
     state: () => ({
         freelancers: [],
-        topFreelancers: [],
         loading: false,
         error: null,
         selectedSubcategory: null,
@@ -13,6 +12,8 @@ export const useFreelancerStore = defineStore("freelancer", {
 
     getters: {
         getFreelancers: (state) => state.freelancers,
+        top3Freelancers: (state) => state.freelancers.slice(0, 3),
+        otherFreelancers: (state) => state.freelancers.slice(3),
         isLoading: (state) => state.loading,
         hasError: (state) => state.error !== null,
     },
@@ -48,33 +49,18 @@ export const useFreelancerStore = defineStore("freelancer", {
             this.loading = true;
             this.error = null;
             this.selectedSubcategory = subcategory;
-            this.freelancers = []; // Kosongkan data sebelumnya
-            this.topFreelancers = []; // Kosongkan data sebelumnya
+            this.freelancers = [];
 
             try {
-                // Panggil kedua endpoint secara bersamaan
-                const [top3Response, freelancersResponse] = await Promise.all([
-                    api.get(`/freelancer/top3/subkategori/${subcategory.id}`),
-                    api.get(`/freelancer/subkategori/${subcategory.id}`),
-                ]);
+                const response = await api.get(
+                    `/freelancer/subkategori/${subcategory.id}`
+                );
 
-                // Proses dan simpan data Top 3
-                if (top3Response.data.code === 200) {
-                    this.topFreelancers = top3Response.data.data;
-                } else {
-                    console.warn(
-                        "Could not fetch top 3 freelancers:",
-                        top3Response.data.message
-                    );
-                }
-
-                // Proses dan simpan data freelancer biasa
-                if (freelancersResponse.data.code === 200) {
-                    this.freelancers = freelancersResponse.data.data;
+                if (response.data.code === 200) {
+                    this.freelancers = response.data.data;
                 } else {
                     throw new Error(
-                        freelancersResponse.data.message ||
-                            "Failed to fetch freelancers"
+                        response.data.message || "Failed to fetch freelancers"
                     );
                 }
             } catch (error) {

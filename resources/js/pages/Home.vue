@@ -75,34 +75,69 @@
 
         <!-- Data State -->
 
-        <div
-            v-else-if="freelancers.length > 0"
-            class="flex justify-center items-center"
-        >
-            <div
-                :class="[
-                    'grid gap-4 p-4 max-w-7xl mx-auto',
-                    freelancers.length === 1 &&
-                        'grid-cols-1 justify-items-center',
-                    freelancers.length === 2 &&
-                        'md:grid-cols-2 justify-items-center',
-                    freelancers.length === 3 &&
-                        'md:grid-cols-2 lg:grid-cols-3 justify-items-center',
-                    freelancers.length >= 4 && 'md:grid-cols-2 lg:grid-cols-4',
-                ]"
-            >
-                <Top3FreelancerCard
-                    v-for="f in topFreelancers"
-                    :key="`top-${f.id}`"
-                    :freelancer="f"
-                    :selectedSubcategory="freelancerStore.selectedSubcategory"
-                />
-                <FreelancerCard
-                    v-for="f in freelancers"
-                    :key="f.id"
-                    :freelancer="f"
-                    :selectedSubcategory="freelancerStore.selectedSubcategory"
-                />
+        <div v-else-if="freelancers.length > 0" class="max-w-7xl mx-auto px-4">
+            <!-- Top 3 Freelancers Section -->
+            <div v-if="top3Freelancers.length > 0" class="mb-10">
+                <h3
+                    class="text-2xl font-bold text-gray-800 dark:text-white mb-4"
+                >
+                    Pilihan Terbaik!
+                </h3>
+                <div class="flex justify-center items-center">
+                    <div
+                        :class="[
+                            'grid gap-4 p-4 max-w-7xl mx-auto',
+                            top3Freelancers.length === 1 &&
+                                'grid-cols-1 justify-items-center',
+                            top3Freelancers.length === 2 &&
+                                'md:grid-cols-2 justify-items-center',
+                            top3Freelancers.length === 3 &&
+                                'md:grid-cols-2 lg:grid-cols-3 justify-items-center',
+                        ]"
+                    >
+                        <FreelancerCard
+                            v-for="f in top3Freelancers"
+                            :key="`top-${f.id}`"
+                            :freelancer="f"
+                            :selectedSubcategory="
+                                freelancerStore.selectedSubcategory
+                            "
+                            :is-top-freelancer="true"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other Freelancers Section -->
+            <div v-if="otherFreelancers.length > 0">
+                <h3
+                    v-if="top3Freelancers.length > 0"
+                    class="text-2xl font-bold text-gray-800 dark:text-white mb-4 mt-4"
+                >
+                    Jelajahi Lainnya
+                </h3>
+                <div class="flex justify-center items-center">
+                    <div
+                        :class="[
+                            'grid gap-4 p-4 max-w-7xl mx-auto',
+                            freelancers.length === 1 &&
+                                'grid-cols-1 justify-items-center',
+                            freelancers.length === 2 &&
+                                'md:grid-cols-2 justify-items-center',
+                            freelancers.length === 3 &&
+                                'md:grid-cols-2 lg:grid-cols-3 justify-items-center',
+                        ]"
+                    >
+                        <FreelancerCard
+                            v-for="f in otherFreelancers"
+                            :key="f.id"
+                            :freelancer="f"
+                            :selectedSubcategory="
+                                freelancerStore.selectedSubcategory
+                            "
+                        />
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -119,11 +154,10 @@ import { useFreelancerStore } from "../stores/freelancerStore";
 import { useSettingStore } from "../stores/settingStore";
 import CategoryButtons from "../components/CategoryButtons.vue";
 import FreelancerCard from "../components/FreelancerCard.vue";
-import Top3FreelancerCard from "../components/Top3FreelancerCard.vue";
 import SearchBar from "../components/SearchBar.vue";
 
 const freelancerStore = useFreelancerStore();
-const { freelancers, topFreelancers, loading, error } =
+const { freelancers, top3Freelancers, otherFreelancers, loading, error } =
     storeToRefs(freelancerStore);
 const subcategoriesToShow = ref([]);
 const isCategorySelected = ref(false);

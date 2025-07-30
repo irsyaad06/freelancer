@@ -25,7 +25,6 @@ Route::prefix('subkategori')->group(function () {
 Route::prefix('freelancer')->group(function () {
     Route::get('/', [FreelancerController::class, 'index']);
     Route::get('/subkategori/{subcategory_id}', [FreelancerController::class, 'freelancerBySubcategory']);
-    Route::get('/top3/subkategori/{subcategory_id}', [FreelancerController::class, 'top3FreelancerBySubcategory']);
     // Route::get('/{id}', [FreelancerController::class, 'show']);
 });
 Route::prefix('jasa')->group(function () {
