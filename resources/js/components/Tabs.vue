@@ -1,6 +1,6 @@
 <template>
     <div class="border-l pl-3 border-gray-300 right-10">
-        <div class="mb-4 border-gray-200 dark:border-gray-700">
+        <div class="mb-4 border-gray-200 ">
             <ul
                 class="flex md:flex-wrap justify-between -mb-px text-sm font-medium text-center bullet"
                 role="tablist"
@@ -8,7 +8,7 @@
                 <li v-for="(pkg, index) in servicePackages" :key="pkg.id" class="me-2" role="presentation">
                     <button
                         :class="[
-                            'inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300',
+                            'inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300',
                             activeTab === index ? 'font-bold border-blue-600 text-blue-600 bg-blue-200' : 'border-transparent text-gray-500'
                         ]"
                         @click="selectPackage(index, pkg)"
@@ -26,7 +26,7 @@
             <div
                 v-for="(pkg, index) in servicePackages"
                 :key="pkg.id"
-                :class="['p-4 rounded-lg bg-gray-50 dark:bg-gray-800', activeTab === index ? 'block' : 'hidden']"
+                :class="['p-4 rounded-lg bg-gray-50', activeTab === index ? 'block' : 'hidden']"
                 :id="`content-${index}`"
                 role="tabpanel"
                 :aria-labelledby="`tab-${index}`"

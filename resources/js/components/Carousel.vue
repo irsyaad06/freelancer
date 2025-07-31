@@ -50,7 +50,7 @@
                 @click="prevSlide"
             >
                 <span
-                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-300 group-hover:bg-white/50 dark:group-hover:bg-white group-focus:outline-none"
+                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:outline-none"
                 >
                     <svg
                         class="w-4 h-4 text-black rtl:rotate-180"
@@ -76,7 +76,7 @@
                 @click="nextSlide"
             >
                 <span
-                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-300 group-hover:bg-white/50 dark:group-hover:bg-white group-focus:outline-none"
+                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30  group-hover:bg-white/50  group-focus:outline-none"
                 >
                     <svg
                         class="w-4 h-4 text-black rtl:rotate-180"

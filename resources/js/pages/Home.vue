@@ -79,7 +79,7 @@
             <!-- Top 3 Freelancers Section -->
             <div v-if="top3Freelancers.length > 0" class="mb-10">
                 <h3
-                    class="text-2xl font-bold text-gray-800 dark:text-white mb-4"
+                    class="text-2xl font-bold text-gray-800  mb-4"
                 >
                     Pilihan Terbaik!
                 </h3>
@@ -112,7 +112,7 @@
             <div v-if="otherFreelancers.length > 0">
                 <h3
                     v-if="top3Freelancers.length > 0"
-                    class="text-2xl font-bold text-gray-800 dark:text-white mb-4 mt-4"
+                    class="text-2xl font-bold text-gray-800 mb-4 mt-4"
                 >
                     Jelajahi Lainnya
                 </h3>

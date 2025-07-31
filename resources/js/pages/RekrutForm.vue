@@ -25,7 +25,9 @@
                             {{ servicePackage.title }}
                         </h2>
 
-                        <p class="text-gray-600 mb-4 break-words break-all whitespace-pre-line">
+                        <p
+                            class="text-gray-600 mb-4 break-words break-all whitespace-pre-line"
+                        >
                             {{ servicePackage.description }}
                         </p>
 
@@ -179,7 +181,10 @@
                                 for="fileUpload"
                                 class="block mb-2 text-sm font-medium text-gray-900"
                             >
-                                Upload File (Opsional) | <span class="text-red-500"> Maksimal 25 MB</span>
+                                Upload File (Opsional) |
+                                <span class="text-red-500">
+                                    Maksimal 25 MB</span
+                                >
                             </label>
                             <input
                                 type="file"

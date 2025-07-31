@@ -5,17 +5,17 @@
     @click.self="$emit('close')"
   >
     <div class="relative w-full max-w-xl p-4" style="max-height: 80vh;">
-      <div class="relative flex flex-col bg-white rounded-lg shadow dark:bg-gray-700" style="max-height: 80vh;">
+      <div class="relative flex flex-col bg-white rounded-lg shadow" style="max-height: 80vh;">
         
         <!-- Header -->
-        <div class="flex items-center justify-between flex-shrink-0 p-4 border-b rounded-t dark:border-gray-600">
-          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+        <div class="flex items-center justify-between flex-shrink-0 p-4 border-b rounded-t">
+          <h3 class="text-xl font-semibold text-gray-900 ">
             Syarat dan Ketentuan
           </h3>
           <button
             @click="$emit('close')"
             type="button"
-            class="inline-flex items-center justify-center w-8 h-8 text-sm text-gray-400 bg-transparent rounded-lg hover:bg-gray-200 hover:text-gray-900 ms-auto dark:hover:bg-gray-600 dark:hover:text-white"
+            class="inline-flex items-center justify-center w-8 h-8 text-sm text-gray-400 bg-transparent rounded-lg hover:bg-gray-200 hover:text-gray-900 ms-auto "
           >
             <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -40,15 +40,15 @@
             </button>
           </div>
 
-          <div v-else-if="term" class="prose max-w-none dark:prose-invert" v-html="term.content"></div>
+          <div v-else-if="term" class="prose max-w-none " v-html="term.content"></div>
         </div>
 
         <!-- Footer -->
-        <div class="flex items-center flex-shrink-0 p-4 border-t border-gray-200 rounded-b dark:border-gray-600">
+        <div class="flex items-center flex-shrink-0 p-4 border-t border-gray-200 rounded-b ">
           <button
             @click="$emit('close')"
             type="button"
-            class="px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            class="px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300"
           >
             Saya Setuju
           </button>
