@@ -1,33 +1,17 @@
-import { ref, watch, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const isDark = ref(false)
 
 export function useTheme() {
-  // Initialize theme on mount
+  // Always ensure light mode on mount
   onMounted(() => {
-    const savedTheme = localStorage.getItem('theme')
-    if (savedTheme === 'dark') {
-      isDark.value = true
-      document.documentElement.classList.add('dark')
-    } else {
-      isDark.value = false
-      document.documentElement.classList.remove('dark')
-    }
+    document.documentElement.classList.remove('dark')
+    localStorage.removeItem('theme')
   })
 
-  // Watch for changes and update DOM
-  watch(isDark, (newVal) => {
-    if (newVal) {
-      document.documentElement.classList.add('dark')
-      localStorage.setItem('theme', 'dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-      localStorage.setItem('theme', 'light')
-    }
-  })
-
+  // Disable theme toggling
   const toggleTheme = () => {
-    isDark.value = !isDark.value
+    // Do nothing
   }
 
   return {
