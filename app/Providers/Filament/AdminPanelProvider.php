@@ -18,6 +18,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Support\Enums\Locale;
+use App\Models\WebSetting;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -28,6 +29,14 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandName(function () {
+                try {
+                    $setting = WebSetting::first();
+                    return $setting?->nama_web ?? config('app.name');
+                } catch (\Throwable $th) {
+                    return config('app.name');
+                }
+            })
             ->colors([
                 'primary' => Color::Blue,
             ])

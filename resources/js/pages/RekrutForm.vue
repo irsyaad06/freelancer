@@ -179,7 +179,7 @@
                                 for="fileUpload"
                                 class="block mb-2 text-sm font-medium text-gray-900"
                             >
-                                Upload File (Opsional)
+                                Upload File (Opsional) | <span class="text-red-500"> Maksimal 25 MB</span>
                             </label>
                             <input
                                 type="file"
@@ -255,6 +255,13 @@
 
     <!-- Terms Modal -->
     <Term :show="showTermsModal" @close="showTermsModal = false" />
+
+    <!-- Order Confirmation Modal -->
+    <OrderConfirmationModal
+        :show="showOrderModal"
+        :order-details="orderDetails"
+        @close="closeOrderModal"
+    />
 </template>
 
 <script setup>
@@ -262,6 +269,8 @@ import { ref, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 import Term from "../components/Term.vue";
+import OrderConfirmationModal from "../components/OrderConfirmationModal.vue";
+import { useSettingStore } from "../stores/settingStore";
 
 const route = useRoute();
 const servicePackage = ref(null);
@@ -269,6 +278,9 @@ const loading = ref(true);
 const error = ref(null);
 const showTermsModal = ref(false);
 const isSubmitting = ref(false);
+const showOrderModal = ref(false);
+const orderDetails = ref({});
+const settingStore = useSettingStore();
 
 const form = ref({
     fullName: "",
@@ -437,21 +449,15 @@ const handleSubmit = async () => {
         );
 
         if (response.data.success) {
-            alert(
-                "Order berhasil dibuat! ID Order: " +
-                    response.data.data.id_order
-            );
-            // Reset form
-            form.value = {
-                fullName: "",
-                email: "",
-                whatsapp: "",
-                jobDescription: "",
-                fileUpload: null,
-                termsAccepted: false,
+            orderDetails.value = {
+                orderNumber: response.data.data.id_order,
+                email: form.value.email,
+                whatsapp: form.value.whatsapp,
+                serviceName: `Pembuatan ${servicePackage.value.subcategory.name}`,
+                packageName: servicePackage.value.title,
+                freelancerName: servicePackage.value.freelancer.name,
             };
-            selectedFile.value = null;
-            characterCount.value = 0;
+            showOrderModal.value = true;
         }
     } catch (error) {
         console.error("Error submitting order:", error.response?.data || error);
@@ -480,8 +486,39 @@ const handleSubmit = async () => {
     }
 };
 
+const closeOrderModal = () => {
+    showOrderModal.value = false;
+
+    if (settingStore.setting && settingStore.setting.telepon_web) {
+        const message = `Halo, saya ingin konfirmasi pesanan dengan detail berikut:
+- No Pesanan: ${orderDetails.value.orderNumber}
+- Email: ${orderDetails.value.email}
+- Jasa: ${orderDetails.value.serviceName}
+- Paket: ${orderDetails.value.packageName}
+- Freelancer: ${orderDetails.value.freelancerName}`;
+        const encodedMessage = encodeURIComponent(message);
+        window.open(
+            `https://wa.me/${settingStore.setting.telepon_web}?text=${encodedMessage}`,
+            "_blank"
+        );
+    }
+
+    // Reset form
+    form.value = {
+        fullName: "",
+        email: "",
+        whatsapp: "",
+        jobDescription: "",
+        fileUpload: null,
+        termsAccepted: false,
+    };
+    selectedFile.value = null;
+    characterCount.value = 0;
+};
+
 // Fetch service package data
 onMounted(async () => {
+    settingStore.fetchSetting();
     try {
         const servicePackageId = route.params.servicePackageId;
         const response = await axios.get(
