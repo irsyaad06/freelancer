@@ -333,11 +333,11 @@ const handleFileUpload = (event) => {
     const file = event.target.files[0];
 
     if (file) {
-        // Check file size (max 10MB)
-        const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+        // Check file size (max 25MB)
+        const maxSize = 25 * 1024 * 1024; // 25MB in bytes
 
         if (file.size > maxSize) {
-            errors.value.fileUpload = "File tidak boleh lebih dari 10MB";
+            errors.value.fileUpload = "File tidak boleh lebih dari 25MB";
             selectedFile.value = null;
             form.value.fileUpload = null;
         } else {
