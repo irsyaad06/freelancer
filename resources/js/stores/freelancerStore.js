@@ -153,4 +153,5 @@ export const useFreelancerStore = defineStore("freelancer", {
             this.error = null;
         },
     },
+    
 });
