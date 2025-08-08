@@ -3,8 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OrderCreated;
 use App\Models\Order;
+use App\Models\WebSetting;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -32,7 +37,7 @@ class OrderController extends Controller
             'buyer_email' => 'required|email|max:255',
             'buyer_whatsapp' => 'required|string|max:20',
             'job_description' => 'required|string',
-            'attachment_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240' //ganti 20mb
+            'attachment_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:25600' // max 25MB
         ]);
 
         $validated['status'] = 'pending';
@@ -57,6 +62,19 @@ class OrderController extends Controller
 
         // Create order
         $order = Order::create($validated);
+
+        // Send email notification
+        try {
+            $order->load(['freelancer', 'package.subcategory']);
+            $webSetting = WebSetting::first();
+            if ($webSetting && $webSetting->email_web) {
+                Mail::to($webSetting->email_web)->send(new OrderCreated($order, $webSetting));
+            }
+        } catch (Exception $e) {
+            // Log the error, but don't stop the response to the user
+            Log::error('Mail sending failed: ' . $e->getMessage());
+        }
+
 
         return response()->json([
             'success' => true,

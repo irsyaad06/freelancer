@@ -76,6 +76,34 @@ export const useFreelancerStore = defineStore("freelancer", {
             }
         },
 
+        async fetchFreelancersBySearch(searchQuery) {
+            this.loading = true;
+            this.error = null;
+            this.selectedSubcategory = null;
+            this.freelancers = [];
+
+            try {
+                const response = await api.get(
+                    `/freelancer?search=${searchQuery}`
+                );
+
+                if (response.data.code === 200) {
+                    this.freelancers = response.data.data;
+                } else {
+                    throw new Error(
+                        response.data.message || "Failed to fetch freelancers"
+                    );
+                }
+            } catch (error) {
+                this.error =
+                    error.message ||
+                    "An error occurred while fetching freelancers";
+                console.error("Error fetching freelancers by search:", error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
         async fetchFreelancerDetail(subcategoryId, freelancerId) {
             this.loading = true;
             this.error = null;
@@ -125,4 +153,5 @@ export const useFreelancerStore = defineStore("freelancer", {
             this.error = null;
         },
     },
+    
 });

@@ -27,7 +27,7 @@
                     type="button"
                     class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 "
                 >
-                    Pertanyaan
+                    Coming Soon
                 </button>
                 <button
                     data-collapse-toggle="navbar-sticky"

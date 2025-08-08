@@ -70,7 +70,7 @@
                     </div>
                 </div>
                 <div>
-                    <form @submit.prevent="handleSubmit" class="max-w-md mt-6">
+                    <form @submit.prevent="store.submitOrder" class="max-w-md mt-6">
                         <!-- Nama Lengkap -->
                         <div class="mb-4">
                             <label
@@ -132,7 +132,7 @@
                                 type="tel"
                                 id="whatsapp"
                                 v-model="form.whatsapp"
-                                @input="validateWhatsApp"
+                                @input="store.validateWhatsApp"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                 placeholder="081234567890"
                                 required
@@ -159,7 +159,7 @@
                                 rows="6"
                                 maxlength="500"
                                 v-model="form.jobDescription"
-                                @input="updateCharacterCount"
+                                @input="store.updateCharacterCount"
                                 class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Ketik deskripsi pekerjaan disini... (maksimal 500 karakter)"
                                 required
@@ -189,7 +189,7 @@
                             <input
                                 type="file"
                                 id="fileUpload"
-                                @change="handleFileUpload"
+                                @change="store.handleFileUpload"
                                 class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
                                 accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                             />
@@ -204,7 +204,7 @@
                                 class="mt-1 text-sm text-green-600"
                             >
                                 File terpilih: {{ selectedFile.name }} ({{
-                                    formatFileSize(selectedFile.size)
+                                    store.formatFileSize(selectedFile.size)
                                 }})
                             </p>
                         </div>
@@ -265,276 +265,42 @@
     <OrderConfirmationModal
         :show="showOrderModal"
         :order-details="orderDetails"
-        @close="closeOrderModal"
+        @close="store.closeOrderModal"
     />
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import axios from "axios";
+import { storeToRefs } from "pinia";
 import Term from "../components/Term.vue";
 import OrderConfirmationModal from "../components/OrderConfirmationModal.vue";
 import { useSettingStore } from "../stores/settingStore";
+import { useRekrutFormStore } from "../stores/rekrutFormStore";
 
 const route = useRoute();
-const servicePackage = ref(null);
-const loading = ref(true);
-const error = ref(null);
-const showTermsModal = ref(false);
-const isSubmitting = ref(false);
-const showOrderModal = ref(false);
-const orderDetails = ref({});
+const store = useRekrutFormStore();
 const settingStore = useSettingStore();
 
-const form = ref({
-    fullName: "",
-    email: "",
-    whatsapp: "",
-    jobDescription: "",
-    fileUpload: null,
-    termsAccepted: false,
-});
+const {
+    servicePackage,
+    loading,
+    error,
+    isSubmitting,
+    showOrderModal,
+    orderDetails,
+    form,
+    errors,
+    selectedFile,
+    characterCount,
+    isFormValid,
+} = storeToRefs(store);
 
-const errors = ref({
-    fullName: "",
-    email: "",
-    whatsapp: "",
-    jobDescription: "",
-    fileUpload: "",
-    termsAccepted: "",
-});
+const showTermsModal = ref(false);
 
-const selectedFile = ref(null);
-const characterCount = ref(0);
-
-const updateCharacterCount = () => {
-    characterCount.value = form.value.jobDescription.length;
-};
-
-const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-};
-
-const validateWhatsApp = (event) => {
-    // Only allow numbers
-    const value = event.target.value.replace(/\D/g, "");
-    form.value.whatsapp = value;
-
-    if (value.length < 10 || value.length > 15) {
-        errors.value.whatsapp = "Nomor WhatsApp harus antara 10-15 digit";
-    } else {
-        errors.value.whatsapp = "";
-    }
-};
-
-const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-
-    if (file) {
-        // Check file size (max 10MB)
-        const maxSize = 10 * 1024 * 1024; // 10MB in bytes
-
-        if (file.size > maxSize) {
-            errors.value.fileUpload = "File tidak boleh lebih dari 10MB";
-            selectedFile.value = null;
-            form.value.fileUpload = null;
-        } else {
-            errors.value.fileUpload = "";
-            selectedFile.value = file;
-            form.value.fileUpload = file;
-        }
-    }
-};
-
-const formatFileSize = (bytes) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-};
-
-const validateForm = () => {
-    let isValid = true;
-
-    // Reset errors
-    Object.keys(errors.value).forEach((key) => (errors.value[key] = ""));
-
-    // Validate full name
-    if (!form.value.fullName.trim()) {
-        errors.value.fullName = "Nama lengkap wajib diisi";
-        isValid = false;
-    }
-
-    // Validate email
-    if (!form.value.email.trim()) {
-        errors.value.email = "Email wajib diisi";
-        isValid = false;
-    } else if (!validateEmail(form.value.email)) {
-        errors.value.email = "Format email tidak valid";
-        isValid = false;
-    }
-
-    // Validate WhatsApp
-    if (!form.value.whatsapp.trim()) {
-        errors.value.whatsapp = "Nomor WhatsApp wajib diisi";
-        isValid = false;
-    } else if (
-        form.value.whatsapp.length < 10 ||
-        form.value.whatsapp.length > 15
-    ) {
-        errors.value.whatsapp = "Nomor WhatsApp harus antara 10-15 digit";
-        isValid = false;
-    }
-
-    // Validate job description
-    if (!form.value.jobDescription.trim()) {
-        errors.value.jobDescription = "Deskripsi pekerjaan wajib diisi";
-        isValid = false;
-    }
-
-    // Validate terms acceptance
-    if (!form.value.termsAccepted) {
-        errors.value.termsAccepted =
-            "Anda harus menyetujui syarat dan ketentuan";
-        isValid = false;
-    }
-
-    return isValid;
-};
-
-const isFormValid = computed(() => {
-    return (
-        form.value.fullName.trim() !== "" &&
-        form.value.email.trim() !== "" &&
-        validateEmail(form.value.email) &&
-        form.value.whatsapp.trim() !== "" &&
-        form.value.whatsapp.length >= 10 &&
-        form.value.whatsapp.length <= 15 &&
-        form.value.jobDescription.trim() !== "" &&
-        form.value.termsAccepted &&
-        !errors.value.fileUpload
-    );
-});
-
-const handleSubmit = async () => {
-    if (!validateForm()) {
-        return;
-    }
-
-    isSubmitting.value = true;
-
-    try {
-        const formData = new FormData();
-
-        // Add form fields
-        formData.append("freelancer_id", servicePackage.value.freelancer.id);
-        formData.append("service_package_id", servicePackage.value.id);
-        formData.append("buyer_name", form.value.fullName);
-        formData.append("buyer_email", form.value.email);
-        formData.append("buyer_whatsapp", form.value.whatsapp);
-        formData.append("job_description", form.value.jobDescription);
-
-        // Add file if provided
-        if (form.value.fileUpload) {
-            formData.append("attachment_file", form.value.fileUpload);
-        }
-
-        const response = await axios.post(
-            //harus diganti jadi dinamis
-            "http://localhost:8000/api/pesanan",
-            formData,
-            {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            }
-        );
-
-        if (response.data.success) {
-            orderDetails.value = {
-                orderNumber: response.data.data.id_order,
-                email: form.value.email,
-                whatsapp: form.value.whatsapp,
-                serviceName: `Pembuatan ${servicePackage.value.subcategory.name}`,
-                packageName: servicePackage.value.title,
-                freelancerName: servicePackage.value.freelancer.name,
-            };
-            showOrderModal.value = true;
-        }
-    } catch (error) {
-        console.error("Error submitting order:", error.response?.data || error);
-
-        if (
-            error.response &&
-            error.response.status === 422 &&
-            error.response.data.errors
-        ) {
-            // Handle validation errors from Laravel
-            const validationErrors = error.response.data.errors;
-            let errorMessage = "Terdapat kesalahan pada input Anda:\n";
-            for (const field in validationErrors) {
-                errorMessage += `- ${validationErrors[field].join(", ")}\n`;
-            }
-            alert(errorMessage);
-        } else if (error.response?.data?.message) {
-            // Handle other server errors with a specific message
-            alert("Error: " + error.response.data.message);
-        } else {
-            // Handle network errors or other unexpected issues
-            alert("Terjadi kesalahan saat mengirim order. Silakan coba lagi.");
-        }
-    } finally {
-        isSubmitting.value = false;
-    }
-};
-
-const closeOrderModal = () => {
-    showOrderModal.value = false;
-
-    if (settingStore.setting && settingStore.setting.telepon_web) {
-        const message = `Halo, saya ingin konfirmasi pesanan dengan detail berikut:
-- No Pesanan: ${orderDetails.value.orderNumber}
-- Email: ${orderDetails.value.email}
-- Jasa: ${orderDetails.value.serviceName}
-- Paket: ${orderDetails.value.packageName}
-- Freelancer: ${orderDetails.value.freelancerName}`;
-        const encodedMessage = encodeURIComponent(message);
-        window.open(
-            `https://wa.me/${settingStore.setting.telepon_web}?text=${encodedMessage}`,
-            "_blank"
-        );
-    }
-
-    // Reset form
-    form.value = {
-        fullName: "",
-        email: "",
-        whatsapp: "",
-        jobDescription: "",
-        fileUpload: null,
-        termsAccepted: false,
-    };
-    selectedFile.value = null;
-    characterCount.value = 0;
-};
-
-// Fetch service package data
-onMounted(async () => {
+onMounted(() => {
     settingStore.fetchSetting();
-    try {
-        const servicePackageId = route.params.servicePackageId;
-        const response = await axios.get(
-            `http://localhost:8000/api/layanan/${servicePackageId}`
-        );
-        servicePackage.value = response.data.data;
-    } catch (err) {
-        error.value = "Failed to load service package data";
-        console.error("Error fetching service package:", err);
-    } finally {
-        loading.value = false;
-    }
+    store.fetchServicePackage(route.params.servicePackageId);
+    store.resetForm();
 });
 </script>
