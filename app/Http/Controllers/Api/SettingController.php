@@ -20,4 +20,12 @@ class SettingController extends Controller
         return response()->json($setting);
     }
 
+    public function title()
+    {
+        $setting = WebSetting::select('nama_web', 'logo_web')->first();
+        if ($setting && $setting->logo_web) {
+            $setting->logo_web = asset('storage/' . $setting->logo_web);
+        }
+        return $setting; // ini return langsung ke view
+    }
 }
