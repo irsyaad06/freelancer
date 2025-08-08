@@ -19,6 +19,7 @@ Route::prefix('kategori')->group(function () {
 
 Route::prefix('subkategori')->group(function () {
     Route::get('/', [SubcategoryController::class, 'index']);
+    Route::get('/search', [SubcategoryController::class, 'search']);
     Route::get('/{id}', [SubcategoryController::class, 'show']);
 });
 

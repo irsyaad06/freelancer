@@ -40,4 +40,25 @@ class SubcategoryController extends Controller
             'data' => $subcategory
         ]);
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        if (empty($query)) {
+            return response()->json([
+                'code' => 200,
+                'message' => 'Query pencarian kosong.',
+                'data' => []
+            ]);
+        }
+
+        $subcategories = Subcategory::where('name', 'like', "%{$query}%")->get();
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Hasil pencarian sub kategori.',
+            'data' => $subcategories
+        ]);
+    }
 }

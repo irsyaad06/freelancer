@@ -31,7 +31,8 @@
                     id="default-search"
                     class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 "
                     placeholder="Cari Jasa / Ketik kebutuhanmu..."
-                    v-model="searchQuery"
+                    :value="searchQuery"
+                    @input="onInput"
                     @focus="showSuggestions = true"
                     autocomplete="off"
                 />
@@ -43,12 +44,12 @@
                 </button>
 
                 <div
-                    v-if="showSuggestions && filteredSuggestions.length > 0"
+                    v-if="showSuggestions && suggestions.length > 0"
                     class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg "
                 >
                     <ul>
                         <li
-                            v-for="suggestion in filteredSuggestions"
+                            v-for="suggestion in suggestions"
                             :key="suggestion.id"
                             @click="selectSuggestion(suggestion)"
                             class="p-3 text-sm flex justify-start text-gray-700 cursor-pointer hover:bg-gray-100 "
@@ -72,47 +73,70 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
+import { useFreelancerStore } from "../stores/freelancerStore";
+import axios from "@/axios";
 
-// --- State Management ---
+const freelancerStore = useFreelancerStore();
 const searchQuery = ref("");
+const suggestions = ref([]);
 const showSuggestions = ref(false);
 
-// --- Data Dummy ---
-const dummyData = ref([
-    { id: 1, name: "Web Design" },
-    { id: 2, name: "Web Development" },
-    { id: 3, name: "Logo Design" },
-    { id: 4, name: "Graphic Design" },
-    { id: 5, name: "Content Writer" },
-    { id: 6, name: "Video Editor" },
-    { id: 7, name: "Social Media Manager" },
-]);
+let debounceTimer;
 
-// --- Computed Property untuk memfilter saran ---
-const filteredSuggestions = computed(() => {
-    if (!searchQuery.value) {
-        return [];
-    }
-    // Filter data berdasarkan input pengguna (tidak case-sensitive)
-    return dummyData.value.filter((item) =>
-        item.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-    );
-});
+    const onInput = (event) => {
+        searchQuery.value = event.target.value;
+        clearTimeout(debounceTimer);
+        
+        if (searchQuery.value.trim().length > 0) {
+            debounceTimer = setTimeout(async () => {
+                try {
+                    const response = await axios.get(
+                        `/api/subkategori/search?query=${searchQuery.value}`
+                    );
+                    
+                    let filteredSuggestions = [];
+                    
+                    if (response.data.data && response.data.data.length) {
+                        // Filter suggestions that start with the typed character(s)
+                        const query = searchQuery.value.toLowerCase();
+                        filteredSuggestions = response.data.data.filter(item => 
+                            item.name.toLowerCase().startsWith(query)
+                        );
+                        
+                        // If no matches starting with the query, show all matches
+                        if (filteredSuggestions.length === 0) {
+                            filteredSuggestions = response.data.data;
+                        }
+                    }
+                    
+                    suggestions.value = filteredSuggestions;
+                    showSuggestions.value = filteredSuggestions.length > 0;
+                } catch (error) {
+                    console.error("Error fetching suggestions:", error);
+                    suggestions.value = [];
+                    showSuggestions.value = false;
+                }
+            }, 300); // 300ms debounce
+        } else {
+            suggestions.value = [];
+            showSuggestions.value = false;
+        }
+    };
 
-// --- Functions ---
 function selectSuggestion(suggestion) {
-    searchQuery.value = suggestion.name; // Isi input dengan saran yang dipilih
-    showSuggestions.value = false; // Sembunyikan dropdown
-    // Anda bisa langsung trigger pencarian di sini jika mau
-    // performSearch();
+    searchQuery.value = suggestion.name;
+    showSuggestions.value = false;
+    freelancerStore.fetchFreelancersBySubcategory(suggestion);
 }
 
 function performSearch() {
-    if (!searchQuery.value) return;
-    console.log("Melakukan pencarian untuk:", searchQuery.value);
-    showSuggestions.value = false; // Sembunyikan dropdown setelah submit
-    // Di sini Anda akan menambahkan logika untuk menavigasi ke halaman hasil pencarian
+    showSuggestions.value = false;
+    if (searchQuery.value.trim()) {
+        freelancerStore.fetchFreelancersBySearch(searchQuery.value);
+    } else {
+        freelancerStore.fetchFreelancers();
+    }
 }
 
 // Menutup dropdown saat fokus keluar dari area komponen

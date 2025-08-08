@@ -8,9 +8,18 @@ use App\Models\Freelancer;
 
 class FreelancerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $freelancer = Freelancer::where('is_verified', true)->with(['servicePackages' => function ($query) {
+        $query = Freelancer::where('is_verified', true);
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->whereHas('subcategories', function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%');
+            });
+        }
+
+        $freelancer = $query->with(['servicePackages' => function ($query) {
             $query->select('id', 'freelancer_id', 'price')->orderBy('price', 'asc');
         }])->get([
             'id',
