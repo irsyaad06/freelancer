@@ -60,24 +60,30 @@ const toggleCategory = async (categoryId) => {
             subcategories: [],
             categorySelected: false,
         });
-    } else {
-        console.log("DEBUG_LOG: Request Payload", { category_id: categoryId });
-        try {
-            const res = await api.get("/subkategori", {
-                params: { category_id: categoryId },
-            });
-            console.log("DEBUG_LOG: Response Data", res.data);
+        } else {
+            console.log("DEBUG_LOG: Request Payload", { category_id: categoryId });
+            try {
+                const res = await api.get(`/subkategori/kategori/${categoryId}`);
+                console.log("DEBUG_LOG: Response Data", res.data);
 
-            subcategories.value = res.data.data || res.data;
-
-            emit("subcategories-updated", {
-                subcategories: getSubcategories(categoryId),
-                categorySelected: true,
-            });
-        } catch (err) {
-            console.error("DEBUG_LOG: Error", err);
+                const filteredSubcategories = res.data.data || res.data;
+                
+                emit("subcategories-updated", {
+                    subcategories: filteredSubcategories,
+                    categorySelected: true,
+                });
+            } catch (err) {
+                console.error("DEBUG_LOG: Error", err);
+                // Fallback ke client-side filtering jika API gagal
+                const filteredSubcategories = subcategories.value.filter(
+                    (sub) => sub.category_id === categoryId
+                );
+                emit("subcategories-updated", {
+                    subcategories: filteredSubcategories,
+                    categorySelected: true,
+                });
+            }
         }
-    }
 };
 
 const getSubcategories = (categoryId) => {

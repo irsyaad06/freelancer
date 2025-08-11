@@ -12,12 +12,21 @@ class SubcategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $subcategory = Subcategory::with('category')->get();
+        $query = Subcategory::with('category');
+        
+        // Filter by category_id if provided
+        if ($request->has('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+        
+        $subcategory = $query->get();
+        
         if (env('APP_DEBUG_LOG', false)) {
-        Log::debug('DEBUG_LOG: Query Result', $subcategory->toArray());
-    }
+            Log::debug('DEBUG_LOG: Query Result', $subcategory->toArray());
+        }
+        
         return response()->json([
             'code' => 200,
             'message' => 'Berhasil mendapatkan data sub kategori',
@@ -61,6 +70,27 @@ class SubcategoryController extends Controller
         return response()->json([
             'code' => 200,
             'message' => 'Hasil pencarian sub kategori.',
+            'data' => $subcategories
+        ]);
+    }
+
+    public function getByCategory($category_id)
+    {
+        $subcategories = Subcategory::with('category')
+            ->where('category_id', $category_id)
+            ->get();
+
+        if ($subcategories->isEmpty()) {
+            return response()->json([
+                'code' => 200,
+                'message' => 'Tidak ada sub kategori untuk kategori ini',
+                'data' => []
+            ]);
+        }
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Berhasil mendapatkan sub kategori berdasarkan kategori',
             'data' => $subcategories
         ]);
     }
