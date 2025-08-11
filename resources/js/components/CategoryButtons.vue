@@ -1,5 +1,5 @@
 <template>
-    <div class="flex  justify-center overflow-x-auto items-center gap-2">
+    <div class="flex justify-center overflow-x-auto items-center gap-2">
         <!-- Category Buttons -->
         <div v-for="category in categories" :key="category.id" class="relative">
             <div class="flex flex-col items-center w-24">
@@ -19,7 +19,6 @@
                     {{ category.name }}
                 </span>
             </div>
-
         </div>
     </div>
 </template>
@@ -52,7 +51,7 @@ const getProfilePhotoUrl = (photoPath) => {
     return `/storage/${photoPath}`;
 };
 
-const toggleCategory = (categoryId) => {
+const toggleCategory = async (categoryId) => {
     const isDeselecting = selectedCategory.value === categoryId;
     selectedCategory.value = isDeselecting ? null : categoryId;
 
@@ -62,11 +61,22 @@ const toggleCategory = (categoryId) => {
             categorySelected: false,
         });
     } else {
-        const subs = getSubcategories(categoryId);
-        emit("subcategories-updated", {
-            subcategories: subs,
-            categorySelected: true,
-        });
+        console.log("DEBUG_LOG: Request Payload", { category_id: categoryId });
+        try {
+            const res = await api.get("/subkategori", {
+                params: { category_id: categoryId },
+            });
+            console.log("DEBUG_LOG: Response Data", res.data);
+
+            subcategories.value = res.data.data || res.data;
+
+            emit("subcategories-updated", {
+                subcategories: getSubcategories(categoryId),
+                categorySelected: true,
+            });
+        } catch (err) {
+            console.error("DEBUG_LOG: Error", err);
+        }
     }
 };
 
@@ -113,7 +123,6 @@ onMounted(async () => {
         console.error("Error loading categories:", error);
     }
 });
-
 </script>
 
 <style scoped>
@@ -127,21 +136,21 @@ onMounted(async () => {
     .flex-wrap {
         gap: 0.5rem;
     }
-    
+
     .w-24 {
         width: 5rem;
     }
-    
+
     .w-16 {
         width: 3rem;
         height: 3rem;
     }
-    
+
     .w-7 {
         width: 1.25rem;
         height: 1.25rem;
     }
-    
+
     .text-xs {
         font-size: 0.7rem;
     }
@@ -151,17 +160,17 @@ onMounted(async () => {
     .w-24 {
         width: 4.5rem;
     }
-    
+
     .w-16 {
         width: 2.5rem;
         height: 2.5rem;
     }
-    
+
     .w-7 {
         width: 1rem;
         height: 1rem;
     }
-    
+
     .text-xs {
         font-size: 0.65rem;
     }

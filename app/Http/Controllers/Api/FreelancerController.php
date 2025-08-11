@@ -77,7 +77,6 @@ class FreelancerController extends Controller
         ]);
     }
 
-
     public function freelancerDetailBySubcategory($subcategory_id, $freelancer_id)
     {
         $freelancer = Freelancer::with([

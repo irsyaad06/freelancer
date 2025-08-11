@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Subcategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SubcategoryController extends Controller
 {
@@ -14,7 +15,9 @@ class SubcategoryController extends Controller
     public function index()
     {
         $subcategory = Subcategory::with('category')->get();
-
+        if (env('APP_DEBUG_LOG', false)) {
+        Log::debug('DEBUG_LOG: Query Result', $subcategory->toArray());
+    }
         return response()->json([
             'code' => 200,
             'message' => 'Berhasil mendapatkan data sub kategori',
