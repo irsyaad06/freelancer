@@ -8,7 +8,7 @@
                     <span>Paket yang dipilih</span>
                     <div v-if="loading" class="text-center py-8">
                         <div
-                            class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mt-10 pt-10"
+                            class="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto mt-10 pt-10"
                         ></div>
                         <p class="mt-2 text-gray-600">Memuat Pilihan Anda...</p>
                     </div>
@@ -19,7 +19,7 @@
 
                     <div
                         v-else-if="servicePackage"
-                        class="mb-8 bg-white rounded-lg shadow-sm border border-blue-300 p-6 mt-6 sticky"
+                        class="mb-8 bg-white rounded-lg shadow-sm border border-green-300 p-6 mt-6 sticky"
                     >
                         <h2 class="flex text-xl font-semibold">
                             {{ servicePackage.title }}
@@ -83,7 +83,7 @@
                                 type="text"
                                 id="fullName"
                                 v-model="form.fullName"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5"
                                 placeholder="Masukkan nama lengkap"
                                 required
                             />
@@ -107,7 +107,7 @@
                                 type="email"
                                 id="email"
                                 v-model="form.email"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5"
                                 placeholder="contoh@email.com"
                                 required
                             />
@@ -133,7 +133,7 @@
                                 id="whatsapp"
                                 v-model="form.whatsapp"
                                 @input="store.validateWhatsApp"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5"
                                 placeholder="081234567890"
                                 required
                             />
@@ -160,7 +160,7 @@
                                 maxlength="500"
                                 v-model="form.jobDescription"
                                 @input="store.updateCharacterCount"
-                                class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                                class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-green-500 focus:border-green-500"
                                 placeholder="Ketik deskripsi pekerjaan disini... (maksimal 500 karakter)"
                                 required
                             ></textarea>
@@ -215,7 +215,7 @@
                                 <input
                                     type="checkbox"
                                     v-model="form.termsAccepted"
-                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                    class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
                                     required
                                 />
                                 <span class="ml-2 text-sm text-gray-900">
@@ -223,7 +223,7 @@
                                     <button
                                         type="button"
                                         @click="showTermsModal = true"
-                                        class="text-blue-600 hover:underline cursor-pointer"
+                                        class="text-green-600 hover:underline cursor-pointer"
                                     >
                                         Syarat dan Ketentuan
                                     </button>
@@ -244,7 +244,7 @@
                             :class="[
                                 'w-full text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center',
                                 isFormValid && !isSubmitting
-                                    ? 'bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300'
+                                    ? 'bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300'
                                     : 'bg-gray-400 cursor-not-allowed',
                             ]"
                         >

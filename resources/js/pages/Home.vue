@@ -1,6 +1,6 @@
 <template>
     <div class="text-center mt-10 pt-10 mb-10 pb-10">
-        <h2 class="text-3xl font-bold text-blue-600 mt-10">
+        <h2 class="text-3xl font-bold text-green-600 mt-10">
             Welcome to {{ setting ? setting.nama_web : "FindLancer" }}
         </h2>
         <p class="mt-2 text-gray-700">
@@ -22,7 +22,7 @@
                     @click="selectSubcategory(sub)"
                     class="px-4 py-2 text-sm font-medium border rounded-full transition-colors"
                     :class="{
-                        'bg-blue-600 text-white border-blue-600':
+                        'bg-green-600 text-white border-green-600':
                             freelancerStore.selectedSubcategory?.id === sub.id,
                         'bg-white text-gray-700 border-gray-300 hover:bg-gray-100':
                             freelancerStore.selectedSubcategory?.id !== sub.id,
@@ -58,7 +58,7 @@
         </section>
         <div v-if="loading" class="flex justify-center items-center py-10">
             <div
-                class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"
+                class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"
             ></div>
         </div>
 
@@ -67,7 +67,7 @@
             <p class="text-red-500">{{ error }}</p>
             <button
                 @click="fetchFreelancers"
-                class="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
+                class="mt-4 px-4 py-2 bg-green-600 text-white rounded"
             >
                 Coba Lagi
             </button>

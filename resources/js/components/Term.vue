@@ -28,7 +28,7 @@
         <!-- Body -->
         <div class="flex-1 p-4 overflow-y-auto space-y-4">
           <div v-if="loading" class="py-10 text-center">
-            <div class="inline-block w-8 h-8 border-b-2 rounded-full animate-spin border-blue-600"></div>
+            <div class="inline-block w-8 h-8 border-b-2 rounded-full animate-spin border-green-600"></div>
             <p class="mt-2 text-gray-500">Memuat...</p>
           </div>
 
@@ -48,7 +48,7 @@
           <button
             @click="$emit('close')"
             type="button"
-            class="px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300"
+            class="px-5 py-2.5 text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300"
           >
             Saya Setuju
           </button>

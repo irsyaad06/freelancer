@@ -36,7 +36,7 @@
                     <Tabs :service-packages="freelancerDetail?.servicePackages || []" @package-selected="handlePackageSelection" />
                 </div>
                 <div class="mt-2 pl-3 w-full flex items-end">
-                    <router-link :to="`/rekrut/jasa/${selectedPackage.id}`" v-if="selectedPackage" class="w-full inline-flex justify-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300  cursor-pointer">
+                    <router-link :to="`/rekrut/jasa/${selectedPackage.id}`" v-if="selectedPackage" class="w-full inline-flex justify-center px-4 py-2 text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300  cursor-pointer">
                         Rekrut
                     </router-link>
                 </div>

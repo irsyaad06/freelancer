@@ -18,9 +18,9 @@
                 <div class="items-center px-4 py-3">
                     <button
                         @click="closeModal"
-                        class="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="px-4 py-2 bg-green-700 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-500"
                     >
-                        Tutup
+                        Lanjutkan Ke Whatsapp
                     </button>
                 </div>
             </div>

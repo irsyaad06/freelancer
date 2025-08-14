@@ -73,7 +73,7 @@
             <div class="flex flex-col space-y-2 w-full">
                 <button
                     @click="goToDetail"
-                    class="w-full inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300  cursor-pointer"
+                    class="w-full inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300  cursor-pointer"
                 >
                     Lihat Detail
                 </button>

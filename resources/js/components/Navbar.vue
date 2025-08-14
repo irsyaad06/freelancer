@@ -25,7 +25,7 @@
                 <button
                     
                     type="button"
-                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 "
+                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-green-700 hover:bg-green-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 "
                 >
                     Coming Soon
                 </button>
@@ -67,8 +67,8 @@
                             :class="[
                                 'block py-2 px-3 rounded-sm md:p-0',
                                 route.path === '/'
-                                    ? 'text-blue-700 bg-blue-100 md:bg-transparent md:text-blue-700'
-                                    : 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700',
+                                    ? 'text-green-700 bg-green-100 md:bg-transparent md:text-green-700'
+                                    : 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700',
                             ]"
                         >
                             Beranda
@@ -77,7 +77,7 @@
                     <!-- <li>
                         <a
                             href="#"
-                            class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 "
+                            class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0 "
                         >
                             Tentang
                         </a>
@@ -85,7 +85,7 @@
                     <li>
                         <a
                             href="#"
-                            class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 "
+                            class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0 "
                         >
                             Kontak
                         </a>
@@ -116,6 +116,6 @@ onMounted(() => {
 <style scoped>
 /* Tambahan styling untuk active state */
 .router-link-active {
-    @apply text-blue-700 bg-blue-100 md:bg-transparent md:text-blue-700;
+    @apply text-green-700 bg-green-100 md:bg-transparent md:text-green-700;
 }
 </style>

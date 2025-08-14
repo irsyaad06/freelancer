@@ -15,7 +15,7 @@ class DashboardStatsWidget extends BaseWidget
             Stat::make('Jumlah Freelancer', Freelancer::count())
                 ->description('Total Freelancer Terdaftar')
                 ->icon('heroicon-o-users')
-                ->color('primary'),
+                ->color('info'),
 
             Stat::make('Jumlah Pembeli Pending', Order::distinct()->where('status', 'pending')->count('id'))
                 ->description('Total Pesanan Pending')

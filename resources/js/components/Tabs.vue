@@ -9,7 +9,7 @@
                     <button
                         :class="[
                             'inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300',
-                            activeTab === index ? 'font-bold border-blue-600 text-blue-600 bg-blue-200' : 'border-transparent text-gray-500'
+                            activeTab === index ? 'font-bold border-green-600 text-green-600 bg-green-200' : 'border-transparent text-gray-500'
                         ]"
                         @click="selectPackage(index, pkg)"
                         type="button"

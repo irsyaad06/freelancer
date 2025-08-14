@@ -98,7 +98,7 @@ const getCategoryButtonClass = (categoryId) => {
     const isOpen = selectedCategory.value === categoryId;
 
     return isActive || isOpen
-        ? "border-blue-600 text-blue-600 bg-white hover:bg-blue-50"
+        ? "border-green-600 text-green-600 bg-white hover:bg-green-50"
         : "border-gray-300 text-gray-700 bg-white hover:bg-gray-50";
 };
 
