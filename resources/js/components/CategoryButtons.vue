@@ -24,106 +24,131 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import api from "../axios";
 import { useFreelancerStore } from "../stores/freelancerStore";
 
+// --- STATE & EMITS ---
 const categories = ref([]);
-const subcategories = ref([]);
-const selectedCategory = ref(null);
+const subcategories = ref([]); // Menyimpan semua subkategori untuk fallback jika API gagal
 const freelancerStore = useFreelancerStore();
 const emit = defineEmits(["subcategories-updated"]);
+
+// --- COMPUTED PROPERTY ---
+// Ini menjadi satu-satunya sumber kebenaran untuk mengetahui kategori mana yang aktif/terbuka.
+// Ia secara reaktif akan mengambil category_id dari subkategori yang terpilih di store.
+const openCategoryId = computed(
+    () => freelancerStore.selectedSubcategory?.category_id
+);
+
+// --- HELPER FUNCTION ---
+// Dibuat agar tidak ada duplikasi kode untuk mengambil dan mengirim data subkategori.
+const fetchAndEmitSubcategories = async (categoryId) => {
+    try {
+        const res = await api.get(`/subkategori/kategori/${categoryId}`);
+        const filteredSubcategories = res.data.data || res.data;
+        emit("subcategories-updated", {
+            subcategories: filteredSubcategories,
+            categorySelected: true,
+        });
+    } catch (err) {
+        console.error("Error fetching subcategories:", err);
+        // Fallback ke data yang sudah ada jika API gagal
+        const filteredSubcategories = subcategories.value.filter(
+            (sub) => sub.category_id === categoryId
+        );
+        emit("subcategories-updated", {
+            subcategories: filteredSubcategories,
+            categorySelected: true,
+        });
+    }
+};
 
 const getProfilePhotoUrl = (photoPath) => {
     if (!photoPath) {
         return "https://flowbite.com/docs/images/people/profile-picture-3.jpg";
     }
-
-    // Handle both cases: with and without /storage/ prefix
-    if (photoPath.startsWith("http")) {
+    if (photoPath.startsWith("http") || photoPath.startsWith("/storage/")) {
         return photoPath;
     }
-
-    if (photoPath.startsWith("/storage/")) {
-        return photoPath;
-    }
-
     return `/storage/${photoPath}`;
 };
 
+// --- COMPONENT METHODS ---
+// Fungsi ini dipanggil saat tombol kategori di-klik.
 const toggleCategory = async (categoryId) => {
-    const isDeselecting = selectedCategory.value === categoryId;
-    selectedCategory.value = isDeselecting ? null : categoryId;
+    const isDeselecting = openCategoryId.value === categoryId;
 
     if (isDeselecting) {
-        emit("subcategories-updated", {
-            subcategories: [],
-            categorySelected: false,
-        });
+        // Jika mengklik kategori yang sudah aktif, bersihkan pilihan.
+        // Ini akan memicu watcher untuk menyembunyikan daftar subkategori.
+        freelancerStore.selectedSubcategory = null;
     } else {
-        console.log("DEBUG_LOG: Request Payload", { category_id: categoryId });
-        try {
-            const res = await api.get(`/subkategori/kategori/${categoryId}`);
-            console.log("DEBUG_LOG: Response Data", res.data);
-
-            const filteredSubcategories = res.data.data || res.data;
-
-            emit("subcategories-updated", {
-                subcategories: filteredSubcategories,
-                categorySelected: true,
-            });
-        } catch (err) {
-            console.error("DEBUG_LOG: Error", err);
-            // Fallback ke client-side filtering jika API gagal
-            const filteredSubcategories = subcategories.value.filter(
-                (sub) => sub.category_id === categoryId
-            );
-            emit("subcategories-updated", {
-                subcategories: filteredSubcategories,
-                categorySelected: true,
-            });
-        }
+        // Jika mengklik kategori baru, tampilkan daftar subkategorinya.
+        fetchAndEmitSubcategories(categoryId);
     }
 };
 
-const getSubcategories = (categoryId) => {
-    return subcategories.value.filter((sub) => sub.category_id === categoryId);
-};
-
+// Fungsi ini menentukan class CSS untuk tombol kategori.
 const getCategoryButtonClass = (categoryId) => {
-    const isActive =
-        freelancerStore.selectedSubcategory &&
-        freelancerStore.selectedSubcategory.category_id === categoryId;
-
-    const isOpen = selectedCategory.value === categoryId;
-
-    return isActive || isOpen
+    const isActive = openCategoryId.value === categoryId;
+    return isActive
         ? "border-green-600 text-green-600 bg-white hover:bg-green-50"
         : "border-gray-300 text-gray-700 bg-white hover:bg-gray-50";
 };
 
+// Fungsi ini dijalankan saat awal untuk memilih subkategori default.
 const initializeDefaultSubcategory = () => {
-    // Find subcategory with ID 1
     const defaultSubcategory = subcategories.value.find((sub) => sub.id === 1);
-
     if (defaultSubcategory) {
-        console.log("Default selected:", defaultSubcategory.name);
         freelancerStore.fetchFreelancersBySubcategory(defaultSubcategory);
     }
 };
 
+// Fungsi ini mungkin masih berguna, jadi kita simpan.
+const getSubcategories = (categoryId) => {
+    return subcategories.value.filter((sub) => sub.category_id === categoryId);
+};
+
+// --- WATCHER ---
+// Bagian paling penting untuk sinkronisasi.
+// Watcher ini "mendengarkan" setiap perubahan pada state selectedSubcategory di store.
+watch(
+    () => freelancerStore.selectedSubcategory,
+    (newSubcategory) => {
+        if (newSubcategory && newSubcategory.category_id) {
+            // Jika subkategori baru dipilih (misalnya dari SearchBar),
+            // secara otomatis tampilkan daftar subkategori induknya.
+            fetchAndEmitSubcategories(newSubcategory.category_id);
+        } else {
+            // Jika pilihan subkategori di-reset (menjadi null),
+            // sembunyikan daftar subkategori yang sedang tampil.
+            emit("subcategories-updated", {
+                subcategories: [],
+                categorySelected: false,
+            });
+        }
+    },
+    {
+        // `immediate: true` memastikan watcher ini berjalan sekali saat komponen dimuat,
+        // berguna jika state sudah ada dari awal.
+        immediate: true,
+    }
+);
+
+// --- LIFECYCLE HOOK ---
 onMounted(async () => {
     try {
         const [categoriesRes, subcategoriesRes] = await Promise.all([
             api.get("/kategori"),
             api.get("/subkategori"),
         ]);
-
         categories.value = categoriesRes.data.data || categoriesRes.data;
         subcategories.value =
             subcategoriesRes.data.data || subcategoriesRes.data;
 
-        // Initialize default subcategory after data is loaded
+        // Panggil ini untuk mengatur state default saat halaman pertama kali dibuka.
+        // Watcher akan menangani sisanya secara otomatis.
         initializeDefaultSubcategory();
     } catch (error) {
         console.error("Error loading categories:", error);
