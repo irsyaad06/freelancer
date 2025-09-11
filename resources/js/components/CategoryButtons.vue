@@ -32,6 +32,7 @@ import { useFreelancerStore } from "../stores/freelancerStore";
 const categories = ref([]);
 const subcategories = ref([]);
 const selectedCategory = ref(null); // State lokal untuk melacak kategori yang dibuka manual
+const isDataReady = ref(false); // <--- TAMBAHKAN INI
 const freelancerStore = useFreelancerStore();
 const emit = defineEmits(["subcategories-updated"]);
 
@@ -112,6 +113,8 @@ const initializeDefaultSubcategory = () => {
 watch(
     () => freelancerStore.selectedSubcategory,
     (newSubcategory) => {
+        if (!isDataReady.value) return; // <--- TAMBAHKAN PENJAGA INI
+
         if (newSubcategory && newSubcategory.category_id) {
             fetchAndEmitSubcategories(newSubcategory.category_id);
             selectedCategory.value = newSubcategory.category_id;
@@ -136,6 +139,9 @@ onMounted(async () => {
         categories.value = categoriesRes.data.data || categoriesRes.data;
         subcategories.value =
             subcategoriesRes.data.data || subcategoriesRes.data;
+
+        isDataReady.value = true; // <--- SETelah DATA SIAP, BUKA GERBANGNYA
+
         initializeDefaultSubcategory();
     } catch (error) {
         console.error("Error loading categories:", error);
