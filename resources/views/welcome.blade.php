@@ -14,6 +14,19 @@
 
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
     
+    {{-- BLOK KODE DEVTOOLS DITAMBAHKAN DI SINI --}}
+    @production
+        <script>
+            // Mengatur host koneksi, persis seperti arahan dokumentasi
+            // Kita gunakan '127.0.0.1' agar lebih pasti daripada 'localhost'
+            window.__VUE_DEVTOOLS_HOST__ = '127.0.0.1';
+            // Port default adalah 8098
+            window.__VUE_DEVTOOLS_PORT__ = '8098';
+        </script>
+        {{-- Memuat skrip client langsung dari proxy DevTools yang berjalan di lokal --}}
+        <script src="http://127.0.0.1:8098"></script>
+    @endproduction
+
     {{-- Vite Assets --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
