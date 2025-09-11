@@ -94,7 +94,8 @@ const toggleCategory = async (categoryId) => {
 };
 
 const getCategoryButtonClass = (categoryId) => {
-    const isActive = openCategoryId.value === categoryId;
+    // Kode Baru (Pasti Berhasil)
+    const isActive = Number(openCategoryId.value) === Number(categoryId);
     const isOpen = selectedCategory.value === categoryId;
 
     return isActive || isOpen
