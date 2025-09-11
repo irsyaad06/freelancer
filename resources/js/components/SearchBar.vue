@@ -147,27 +147,25 @@ function performSearch() {
     const query = searchQuery.value.trim();
 
     if (query) {
-        // Cari pencocokan persis (case-insensitive) di dalam suggestion yang ada
-        const bestMatch = suggestions.value.find(
-            (s) => s.name.toLowerCase() === query.toLowerCase()
-        );
-
-        // Jika ada suggestion yang cocok persis dengan teks pencarian
-        if (bestMatch) {
-            // Panggil selectSuggestion agar state subkategori terpilih di-set
-            // Ini akan memastikan ID subkategori tersimpan di store
-            console.log("Match found, selecting suggestion:", bestMatch);
+        // BARU: Cek apakah ada suggestion yang tersedia dari hasil ketikan
+        if (suggestions.value.length > 0) {
+            // Jika ada, langsung pilih suggestion pertama sebagai "best match"
+            const bestMatch = suggestions.value[0];
+            console.log(
+                "Suggestions exist, auto-selecting first one:",
+                bestMatch
+            );
             selectSuggestion(bestMatch);
         } else {
-            // JIKA TIDAK ADA COCOK PERSIS, lakukan pencarian via teks (fallback)
-            console.log("No exact match, searching by text:", query);
+            // Jika tidak ada suggestion sama sekali, baru lakukan pencarian teks umum
+            console.log("No suggestions found, searching by text:", query);
             freelancerStore.fetchFreelancersBySearch(query);
         }
     } else {
-        // Jika input kosong, reset ke daftar semua freelancer
+        // Jika input kosong, reset
         freelancerStore.fetchFreelancers();
     }
-}
+}``
 
 function whatsappLink() {
     if (settingStore.setting && settingStore.setting.telepon_web) {
