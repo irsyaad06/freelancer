@@ -1,4 +1,28 @@
 <template>
+    <div
+        v-if="isProd"
+        style="
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: lime;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 9999;
+            font-size: 12px;
+            font-family: monospace;
+            max-width: 400px;
+            word-wrap: break-word;
+        "
+    >
+        <p><strong>-- DEBUG PANEL (SERVER) --</strong></p>
+        <p><strong>Mode:</strong> {{ envMode }}</p>
+        <p><strong>Selected Subcategory:</strong></p>
+        <pre>{{
+            JSON.stringify(freelancerStore.selectedSubcategory, null, 2)
+        }}</pre>
+    </div>
     <div class="text-center mt-10 pt-10 mb-10 pb-10">
         <h2 class="text-3xl font-bold text-green-600 mt-10">
             Welcome to {{ setting ? setting.nama_web : "FindLancer" }}
@@ -78,9 +102,7 @@
         <div v-else-if="freelancers.length > 0" class="max-w-7xl mx-auto px-4">
             <!-- Top 3 Freelancers Section -->
             <div v-if="top3Freelancers.length > 0" class="mb-10">
-                <h3
-                    class="text-2xl font-bold text-gray-800  mb-4"
-                >
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">
                     Pilihan Terbaik!
                 </h3>
                 <div class="flex justify-center items-center">
@@ -156,7 +178,13 @@ import CategoryButtons from "../components/CategoryButtons.vue";
 import FreelancerCard from "../components/FreelancerCard.vue";
 import SearchBar from "../components/SearchBar.vue";
 
+
 const freelancerStore = useFreelancerStore();
+// computed property untuk menampilkan mode environment
+const envMode = computed(() => import.meta.env.MODE);
+// computed property untuk menampilkan panel hanya di mode produksi
+const isProd = computed(() => import.meta.env.PROD);
+
 const { freelancers, top3Freelancers, otherFreelancers, loading, error } =
     storeToRefs(freelancerStore);
 const subcategoriesToShow = ref([]);
