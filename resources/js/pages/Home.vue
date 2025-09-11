@@ -1,5 +1,5 @@
 <template>
-    <div
+    <!-- <div
         v-if="isProd"
         style="
             position: fixed;
@@ -22,10 +22,10 @@
         <pre>{{
             JSON.stringify(freelancerStore.selectedSubcategory, null, 2)
         }}</pre>
-    </div>
+    </div> -->
     <div class="text-center mt-10 pt-10 mb-10 pb-10">
         <h2 class="text-3xl font-bold text-green-600 mt-10">
-            Welcome to {{ setting ? setting.nama_web : "FindLancer" }}
+            Welcome to {{ setting ? setting.nama_web : "..." }}
         </h2>
         <p class="mt-2 text-gray-700">
             Find the best freelancers for your project.

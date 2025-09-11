@@ -15,7 +15,7 @@
                 />
                 <span
                     class="self-center text-2xl font-semibold whitespace-nowrap "
-                    >{{ setting ? setting.nama_web : "FindLancer" }}</span
+                    >{{ setting ? setting.nama_web : "..." }}</span
                 >
             </a>
             <div
