@@ -1,5 +1,5 @@
 <template>
-    <div class="category-container flex overflow-x-auto items-center gap-2">
+    <div class="category-container flex overflow-x-auto items-start gap-2">
         <!-- Category Buttons -->
         <div v-for="category in categories" :key="category.id" class="relative">
             <div class="flex flex-col items-center w-24">
