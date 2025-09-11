@@ -103,6 +103,13 @@ const getCategoryButtonClass = (categoryId) => {
 };
 
 const initializeDefaultSubcategory = () => {
+    // TAMBAHKAN PENJAGA INI DI ATAS
+    // Jika sudah ada subkategori yang terpilih dari store, JANGAN LAKUKAN APA-APA.
+    if (freelancerStore.selectedSubcategory) {
+        return;
+    }
+
+    // Kode di bawah ini hanya akan berjalan jika tidak ada subkategori yang terpilih.
     const defaultSubcategory = subcategories.value.find((sub) => sub.id === 1);
     if (defaultSubcategory) {
         freelancerStore.fetchFreelancersBySubcategory(defaultSubcategory);
