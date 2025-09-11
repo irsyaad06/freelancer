@@ -38,14 +38,15 @@
                 />
                 <button
                     type="submit"
-                    class="text-white absolute end-2.5 bottom-2.5 bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2"
+                    class="text-white absolute end-2.5 bottom-2.5 bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 disabled:bg-green-400 disabled:cursor-not-allowed"
+                    :disabled="searchQuery.trim().length === 0"
                 >
                     Cari
                 </button>
 
                 <div
                     v-if="showSuggestions"
-                    class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg"
+                    class="absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg"
                 >
                     <!-- Kalau ada hasil -->
                     <template v-if="suggestions.length > 0">
@@ -164,7 +165,8 @@ function performSearch() {
         // Jika input kosong, reset
         freelancerStore.fetchFreelancers();
     }
-}``
+}
+``;
 
 function whatsappLink() {
     if (settingStore.setting && settingStore.setting.telepon_web) {
