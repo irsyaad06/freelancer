@@ -2,30 +2,50 @@
     <div class="max-w-screen-xl mx-auto p-4 mt-10 pt-10 mb-10">
         <div>
             <div class="flex">
-                <span class="text-3xl mr-2 font-semibold">{{ freelancerDetail?.kategori || 'Desain' }}</span>
-                <span class="text-3xl font-semibold">{{ freelancerDetail?.subkategori || 'Logo' }}</span>
+                <span class="text-3xl mr-2 font-semibold">{{
+                    freelancerDetail?.kategori || "Desain"
+                }}</span>
+                <span class="text-3xl font-semibold">{{
+                    freelancerDetail?.subkategori || "Logo"
+                }}</span>
             </div>
         </div>
 
         <div class="mt-3 mb-3">
-            <Avatar :freelancer="freelancerDetail?.freelancer || { name: 'Loading...', profile_photo: null }" />
+            <Avatar
+                :freelancer="
+                    freelancerDetail?.freelancer || {
+                        name: 'Loading...',
+                        profile_photo: null,
+                    }
+                "
+            />
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="col-span-3 flex flex-col gap-4">
                 <div>
-                    <Carousel :photos="freelancerDetail?.freelancer?.photos || []" />
+                    <Carousel
+                        :photos="freelancerDetail?.freelancer?.photos || []"
+                        :is-loading="loading"
+                    />
                 </div>
                 <div id="default-styled-tab-content">
-                    <span class="text-2xl font-semibold p-2">Detail Services</span>
+                    <span class="text-2xl font-semibold p-2"
+                        >Detail Services</span
+                    >
                     <div class="p-2">
                         <div v-if="selectedPackage">
-                            <p class="text-gray-700 break-words break-all whitespace-pre-line">
+                            <p
+                                class="text-gray-700 break-words break-all whitespace-pre-line"
+                            >
                                 {{ selectedPackage.description }}
                             </p>
                         </div>
                         <div v-else>
-                            <p class="text-gray-500">Pilih paket untuk melihat deskripsi detail</p>
+                            <p class="text-gray-500">
+                                Pilih paket untuk melihat deskripsi detail
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -33,10 +53,19 @@
 
             <div class="flex flex-col">
                 <div>
-                    <Tabs :service-packages="freelancerDetail?.servicePackages || []" @package-selected="handlePackageSelection" />
+                    <Tabs
+                        :service-packages="
+                            freelancerDetail?.servicePackages || []
+                        "
+                        @package-selected="handlePackageSelection"
+                    />
                 </div>
                 <div class="mt-2 pl-3 w-full flex items-end">
-                    <router-link :to="`/rekrut/jasa/${selectedPackage.id}`" v-if="selectedPackage" class="w-full inline-flex justify-center px-4 py-2 text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300  cursor-pointer">
+                    <router-link
+                        :to="`/rekrut/jasa/${selectedPackage.id}`"
+                        v-if="selectedPackage"
+                        class="w-full inline-flex justify-center px-4 py-2 text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 cursor-pointer"
+                    >
                         Rekrut
                     </router-link>
                 </div>
@@ -46,10 +75,10 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
-import { storeToRefs } from 'pinia';
-import { useFreelancerStore } from '../stores/freelancerStore';
+import { onMounted, ref, watch } from "vue"; // watch di-import di atas
+import { useRoute } from "vue-router";
+import { storeToRefs } from "pinia";
+import { useFreelancerStore } from "../stores/freelancerStore";
 import Avatar from "../components/Avatar.vue";
 import Carousel from "../components/Carousel.vue";
 import Tabs from "../components/Tabs.vue";
@@ -72,10 +101,13 @@ onMounted(() => {
 });
 
 // Watch for changes in freelancerDetail to set default package
-import { watch } from 'vue';
-watch(() => freelancerDetail.value, (newDetail) => {
-    if (newDetail?.servicePackages?.length > 0) {
-        selectedPackage.value = newDetail.servicePackages[0];
-    }
-}, { immediate: true });
+watch(
+    () => freelancerDetail.value,
+    (newDetail) => {
+        if (newDetail?.servicePackages?.length > 0) {
+            selectedPackage.value = newDetail.servicePackages[0];
+        }
+    },
+    { immediate: true }
+);
 </script>
