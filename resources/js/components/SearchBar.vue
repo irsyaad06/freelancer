@@ -144,9 +144,27 @@ function selectSuggestion(suggestion) {
 
 function performSearch() {
     showSuggestions.value = false;
-    if (searchQuery.value.trim()) {
-        freelancerStore.fetchFreelancersBySearch(searchQuery.value);
+    const query = searchQuery.value.trim();
+
+    if (query) {
+        // Cari pencocokan persis (case-insensitive) di dalam suggestion yang ada
+        const bestMatch = suggestions.value.find(
+            (s) => s.name.toLowerCase() === query.toLowerCase()
+        );
+
+        // Jika ada suggestion yang cocok persis dengan teks pencarian
+        if (bestMatch) {
+            // Panggil selectSuggestion agar state subkategori terpilih di-set
+            // Ini akan memastikan ID subkategori tersimpan di store
+            console.log("Match found, selecting suggestion:", bestMatch);
+            selectSuggestion(bestMatch);
+        } else {
+            // JIKA TIDAK ADA COCOK PERSIS, lakukan pencarian via teks (fallback)
+            console.log("No exact match, searching by text:", query);
+            freelancerStore.fetchFreelancersBySearch(query);
+        }
     } else {
+        // Jika input kosong, reset ke daftar semua freelancer
         freelancerStore.fetchFreelancers();
     }
 }
