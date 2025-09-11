@@ -24,7 +24,7 @@
             window.__VUE_DEVTOOLS_PORT__ = '8098';
         </script>
         {{-- Memuat skrip client langsung dari proxy DevTools yang berjalan di lokal --}}
-        <script src="http://127.0.0.1:8098"></script>
+        <script src="https://127.0.0.1:8098" defer></script>
     @endproduction
 
     {{-- Vite Assets --}}
