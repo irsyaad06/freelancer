@@ -8,7 +8,7 @@
         </p>
 
         <SearchBar />
-        <div class="p-8">
+        <div class="px-0 py-8">
             <CategoryButtons
                 @subcategories-updated="handleSubcategoriesUpdate"
             />

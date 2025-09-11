@@ -1,5 +1,5 @@
 <template>
-    <div class="flex justify-center overflow-x-auto items-center gap-2">
+    <div class="category-container flex overflow-x-auto items-center gap-2">
         <!-- Category Buttons -->
         <div v-for="category in categories" :key="category.id" class="relative">
             <div class="flex flex-col items-center w-24">
@@ -60,30 +60,30 @@ const toggleCategory = async (categoryId) => {
             subcategories: [],
             categorySelected: false,
         });
-        } else {
-            console.log("DEBUG_LOG: Request Payload", { category_id: categoryId });
-            try {
-                const res = await api.get(`/subkategori/kategori/${categoryId}`);
-                console.log("DEBUG_LOG: Response Data", res.data);
+    } else {
+        console.log("DEBUG_LOG: Request Payload", { category_id: categoryId });
+        try {
+            const res = await api.get(`/subkategori/kategori/${categoryId}`);
+            console.log("DEBUG_LOG: Response Data", res.data);
 
-                const filteredSubcategories = res.data.data || res.data;
-                
-                emit("subcategories-updated", {
-                    subcategories: filteredSubcategories,
-                    categorySelected: true,
-                });
-            } catch (err) {
-                console.error("DEBUG_LOG: Error", err);
-                // Fallback ke client-side filtering jika API gagal
-                const filteredSubcategories = subcategories.value.filter(
-                    (sub) => sub.category_id === categoryId
-                );
-                emit("subcategories-updated", {
-                    subcategories: filteredSubcategories,
-                    categorySelected: true,
-                });
-            }
+            const filteredSubcategories = res.data.data || res.data;
+
+            emit("subcategories-updated", {
+                subcategories: filteredSubcategories,
+                categorySelected: true,
+            });
+        } catch (err) {
+            console.error("DEBUG_LOG: Error", err);
+            // Fallback ke client-side filtering jika API gagal
+            const filteredSubcategories = subcategories.value.filter(
+                (sub) => sub.category_id === categoryId
+            );
+            emit("subcategories-updated", {
+                subcategories: filteredSubcategories,
+                categorySelected: true,
+            });
         }
+    }
 };
 
 const getSubcategories = (categoryId) => {
@@ -135,6 +135,19 @@ onMounted(async () => {
 /* Ensure dropdowns appear above other content */
 .relative {
     position: relative;
+}
+
+.category-container {
+    /* Default (Mobile First): Rata kiri */
+    justify-content: flex-start;
+}
+
+/* Untuk layar medium (md) ke atas, yaitu 768px */
+@media (min-width: 768px) {
+    .category-container {
+        /* Rata tengah untuk desktop */
+        justify-content: center;
+    }
 }
 
 /* Responsive adjustments */
