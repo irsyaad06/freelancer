@@ -8,6 +8,7 @@
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
+        "@vue/devtools": "^8.0.2",
         "autoprefixer": "^10.4.21",
         "axios": "^1.10.0",
         "concurrently": "^9.0.1",
