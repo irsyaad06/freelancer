@@ -147,7 +147,6 @@ function performSearch() {
     const query = searchQuery.value.trim();
 
     if (query) {
-        // BARU: Cek apakah ada suggestion yang tersedia dari hasil ketikan
         if (suggestions.value.length > 0) {
             // Jika ada, langsung pilih suggestion pertama sebagai "best match"
             const bestMatch = suggestions.value[0];
